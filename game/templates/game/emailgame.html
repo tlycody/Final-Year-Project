@@ -1,0 +1,165 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Phishing Ninja | Email Threat Detective</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/emailgame.css' %}">
+</head>
+<body>
+<div id="app">
+
+  <!-- ══════════════════════════════
+       INSTRUCTIONS SCREEN
+  ══════════════════════════════ -->
+  <div id="screen-intro" class="screen visible">
+    <div class="intro-logo">⚔ PHISHING NINJA</div>
+    <div class="intro-sub">EMAIL THREAT DETECTIVE · TRAINING MODULE 01</div>
+
+    <div class="intro-grid">
+      <div class="intro-card">
+        <h3>📋 HOW TO PLAY</h3>
+        <ul>
+          <li>An email will slide up onto the screen</li>
+          <li>Read it carefully for suspicious content</li>
+          <li><strong style="color:var(--text)">Tap / click</strong> any text you think is a red flag to highlight it</li>
+          <li>When you're ready, decide: <strong style="color:#ff9f43">Phishing</strong> or <strong style="color:var(--green)">Safe</strong></li>
+          <li>If phishing — <strong style="color:var(--text)">click anywhere on the email</strong> to slash it!</li>
+        </ul>
+      </div>
+
+      <div class="intro-card">
+        <h3>🎯 SCORING</h3>
+        <table class="score-table">
+          <tr><td>✅ Correct highlight (each)</td><td>+30 pts</td></tr>
+          <tr><td>⚔️ Cutting a phishing email</td><td>+10 pts</td></tr>
+          <tr><td>🛡️ Correctly passing a safe email</td><td>+50 pts</td></tr>
+          <tr><td>🌟 All red flags found (bonus)</td><td>+50 pts</td></tr>
+          <tr><td>❌ Wrong highlight (penalty)</td><td>−10 pts</td></tr>
+          <tr><td>💀 Wrong verdict</td><td>+0 pts</td></tr>
+        </table>
+      </div>
+
+      <div class="intro-card">
+        <h3>⚠️ RED FLAGS TO LOOK FOR</h3>
+        <ul>
+          <li>Suspicious sender email addresses</li>
+          <li>Urgent / threatening language</li>
+          <li>Fake or misspelled URLs</li>
+          <li>Requests for passwords or PINs</li>
+          <li>Threats about account deletion</li>
+        </ul>
+      </div>
+
+      <div class="intro-card">
+        <h3>💡 TIPS</h3>
+        <ul>
+          <li>You can cut without highlighting — but you'll miss out on highlight points</li>
+          <li>Find ALL red flags to earn the +50 bonus</li>
+          <li>Wrong highlights lose you points — be precise!</li>
+          <li>Safe emails should NOT be cut</li>
+        </ul>
+      </div>
+    </div>
+
+    <button class="btn-start" onclick="startGame()">▶ START TRAINING</button>
+  </div>
+
+  <!-- ══════════════════════════════
+       GAME SCREEN
+  ══════════════════════════════ -->
+  <div id="screen-game" class="screen hidden" style="overflow:hidden;">
+
+    <!-- HUD -->
+    <div id="hud">
+      <div class="hud-block">
+        <span class="hud-label">Score</span>
+        <span class="hud-value" id="hud-score">0</span>
+      </div>
+      <div class="hud-block">
+        <span class="hud-title">⚔ PHISHING NINJA</span>
+      </div>
+      <div class="hud-block right">
+        <span class="hud-label">Email</span>
+        <span class="hud-value" id="hud-progress">1 / 7</span>
+      </div>
+    </div>
+
+    <!-- Ticker -->
+    <div id="ticker">👆 CLICK SUSPICIOUS TEXT TO HIGHLIGHT · THEN DELIVER YOUR VERDICT</div>
+
+    <!-- Email stage -->
+    <div id="email-stage">
+      <div id="email-card">
+        <div id="slash-canvas"></div>
+        <div id="flash-overlay"></div>
+        <div class="email-chrome">
+          <div class="chrome-dot red"></div>
+          <div class="chrome-dot yellow"></div>
+          <div class="chrome-dot green"></div>
+          <span class="chrome-label" id="email-client-label">Gmail</span>
+        </div>
+        <div class="email-subject-bar" id="email-subject-bar"></div>
+        <div class="email-header" id="email-header"></div>
+        <div class="email-body"  id="email-body"></div>
+      </div>
+    </div>
+
+    <!-- Feedback bubble -->
+    <div id="feedback-bubble">
+      <div class="fb-icon" id="fb-icon"></div>
+      <div>
+        <div class="fb-title" id="fb-title"></div>
+        <div class="fb-body"  id="fb-body"></div>
+      </div>
+    </div>
+
+    <!-- Action bar -->
+    <div id="action-bar">
+      <button class="btn-phish" onclick="selectVerdict('phishing')">⚔ PHISHING — CUT IT</button>
+      <button class="btn-safe"  onclick="selectVerdict('safe')">✅ SAFE — LET IT PASS</button>
+    </div>
+
+    <!-- Slash mode hint (replaces action bar) -->
+    <div id="slash-hint" style="display:none;">⚔ CLICK ANYWHERE ON THE EMAIL TO SLASH IT ⚔</div>
+
+  </div>
+
+  <!-- ══════════════════════════════
+       RESULT OVERLAY
+  ══════════════════════════════ -->
+  <div id="result-overlay">
+    <div id="result-card">
+      <div class="result-icon" id="res-icon"></div>
+      <div class="result-title" id="res-title"></div>
+      <div class="result-msg"   id="res-msg"></div>
+      <div class="result-score-gained" id="res-score-gained"></div>
+      <div class="result-score-label"  id="res-score-label"></div>
+      <div class="score-breakdown" id="res-breakdown"></div>
+      <div class="missed-section" id="res-missed" style="display:none"></div>
+      <button class="btn-next" id="btn-next" onclick="nextEmail()"></button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       GAME OVER SCREEN
+  ══════════════════════════════ -->
+  <div id="screen-gameover" class="screen hidden">
+    <div class="go-title">MISSION COMPLETE</div>
+    <div class="go-score" id="go-score">0</div>
+    <div class="go-label">TOTAL SCORE</div>
+    <p class="go-sub">You've completed all threat scenarios.<br>Stay vigilant — phishing attacks are increasingly sophisticated.</p>
+    <button class="btn-start" onclick="restartGame()" style="margin-top:8px">↺ PLAY AGAIN</button>
+  </div>
+
+</div><!-- #app -->
+
+<!-- ══════════════════════════════════════════════════════
+     JAVASCRIPT GAME ENGINE
+══════════════════════════════════════════════════════ -->
+  <script src="{% static 'js/emailgame.js' %}" defer></script>
+</body>
+</html>

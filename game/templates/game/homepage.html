@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Home</title>
+
+</head>
+<body>
+    <!-- Top right navigation -->
+    <div class="top-right-nav">
+        <a href="{% url 'glossary' %}" class="nav-btn">Glossary</a>
+        <a href="{% url 'gdpr' %}" class="nav-btn">GDPR</a>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content">
+        <h1>Welcome to BotBusters!</h1>
+        
+        <div class="button-container">
+            <a href="{% url 'login' %}">
+                <button class="auth-btn login-btn">Login</button>
+            </a>
+            <a href="{% url 'register' %}">
+                <button class="auth-btn register-btn">Register</button>
+            </a>
+        </div>
+
+        <div>
+            <a href="{% url 'play_game' %}">
+                <button class="play-btn">Start Game as Guest</button>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

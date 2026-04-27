@@ -1,0 +1,150 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Deepfake Detector | Cyber Security Training</title>
+
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/aidetectorgame.css' %}">
+</head>
+<body>
+<div id="app">
+
+  <!-- ══════════════════════════════
+       INTRO SCREEN
+  ══════════════════════════════ -->
+  <div id="screen-intro" class="screen visible">
+    <div class="intro-logo">🕵 DEEPFAKE DETECTOR</div>
+    <div class="intro-sub">AI THREAT DETECTION · TRAINING MODULE 02</div>
+
+    <div class="intro-grid">
+      <div class="intro-card">
+        <h3>📋 HOW TO PLAY</h3>
+        <ul>
+          <li>A scenario card will appear — a voice call, video, post, or article</li>
+          <li>Read carefully for suspicious content</li>
+          <li><strong style="color:var(--text)">Tap / click</strong> any text that seems like a red flag to highlight it</li>
+          <li>Decide: <strong style="color:#ff9f43">AI Fake</strong> or <strong style="color:var(--green)">Genuine</strong></li>
+          <li>If AI fake — <strong style="color:var(--text)">click anywhere on the card</strong> to slash it!</li>
+        </ul>
+      </div>
+
+      <div class="intro-card">
+        <h3>🎯 SCORING</h3>
+        <table class="score-table">
+          <tr><td>✅ Correct red flag highlighted</td><td>+30 pts</td></tr>
+          <tr><td>⚔️ Cutting an AI fake</td><td>+10 pts</td></tr>
+          <tr><td>🛡️ Correctly identifying genuine content</td><td>+50 pts</td></tr>
+          <tr><td>🌟 All red flags found (bonus)</td><td>+50 pts</td></tr>
+          <tr><td>❌ Wrong highlight (penalty)</td><td>−10 pts</td></tr>
+          <tr><td>💀 Wrong verdict</td><td>+0 pts</td></tr>
+        </table>
+      </div>
+
+      <div class="intro-card">
+        <h3>⚠️ THREAT TYPES</h3>
+        <ul>
+          <li>🎤 <strong style="color:var(--text)">AI Voice Clone</strong> — CEO / family member impersonation</li>
+          <li>🎬 <strong style="color:var(--text)">Deepfake Video</strong> — fake colleague requests</li>
+          <li>⭐ <strong style="color:var(--text)">Fake Celebrity</strong> — investment / crypto scams</li>
+          <li>🌊 <strong style="color:var(--text)">Disaster Photos</strong> — AI-generated crisis images</li>
+        </ul>
+      </div>
+
+      <div class="intro-card">
+        <h3>💡 TIPS</h3>
+        <ul>
+          <li>You can slash without highlighting — but miss out on flag points</li>
+          <li>Find ALL red flags to earn the +50 bonus</li>
+          <li>Wrong highlights lose points — be precise!</li>
+          <li>Not everything is a fake — look for legitimacy signals too</li>
+        </ul>
+      </div>
+    </div>
+
+    <button class="btn-start" onclick="startGame()">▶ START DETECTING</button>
+  </div>
+
+  <!-- ══════════════════════════════
+       GAME SCREEN
+  ══════════════════════════════ -->
+  <div id="screen-game" class="screen hidden" style="overflow:hidden;">
+
+    <div id="hud">
+      <div class="hud-block">
+        <span class="hud-label">Score</span>
+        <span class="hud-value" id="hud-score">0</span>
+      </div>
+      <div class="hud-block">
+        <span class="hud-title">🕵 DEEPFAKE DETECTOR</span>
+      </div>
+      <div class="hud-block right">
+        <span class="hud-label">Scenario</span>
+        <span class="hud-value" id="hud-progress">1 / 7</span>
+      </div>
+    </div>
+
+    <div id="ticker">👆 CLICK SUSPICIOUS TEXT TO HIGHLIGHT · THEN DELIVER YOUR VERDICT</div>
+
+    <div id="card-stage">
+      <div id="scenario-card">
+        <div id="slash-canvas"></div>
+        <div id="flash-overlay"></div>
+        <div id="platform-header" class="platform-header"></div>
+        <div id="media-note"  class="media-note" style="display:none;"></div>
+        <div id="sender-row"  class="sender-row"></div>
+        <div id="card-body"   class="card-body"></div>
+      </div>
+    </div>
+
+    <div id="feedback-bubble">
+      <div class="fb-icon"  id="fb-icon"></div>
+      <div>
+        <div class="fb-title" id="fb-title"></div>
+        <div class="fb-body"  id="fb-body"></div>
+      </div>
+    </div>
+
+    <div id="action-bar">
+      <button class="btn-fake" onclick="selectVerdict('fake')">⚔ AI FAKE — CUT IT</button>
+      <button class="btn-safe" onclick="selectVerdict('safe')">✅ GENUINE — LET IT PASS</button>
+    </div>
+
+    <div id="slash-hint" style="display:none;">⚔ CLICK ANYWHERE ON THE CARD TO SLASH IT ⚔</div>
+  </div>
+
+  <!-- ══════════════════════════════
+       RESULT OVERLAY
+  ══════════════════════════════ -->
+  <div id="result-overlay">
+    <div id="result-card">
+      <div class="result-icon"        id="res-icon"></div>
+      <div class="result-title"       id="res-title"></div>
+      <div class="result-msg"         id="res-msg"></div>
+      <div class="result-score-gained" id="res-score-gained"></div>
+      <div class="result-score-label"  id="res-score-label"></div>
+      <div class="score-breakdown"    id="res-breakdown"></div>
+      <div class="missed-section"     id="res-missed" style="display:none;"></div>
+      <button class="btn-next"        id="btn-next" onclick="nextScenario()"></button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       GAME OVER SCREEN
+  ══════════════════════════════ -->
+  <div id="screen-gameover" class="screen hidden">
+    <div class="go-title">MISSION COMPLETE</div>
+    <div class="go-score" id="go-score">0</div>
+    <div class="go-label">TOTAL SCORE</div>
+    <p class="go-sub">You've completed all AI threat scenarios.<br>Remember: always verify through a separate, trusted channel.</p>
+    <button class="btn-start" onclick="restartGame()" style="margin-top:8px">↺ PLAY AGAIN</button>
+    <a class="btn-start" href="{% url 'play_game' %}" style="margin-top:8px;text-decoration:none;display:block;">← ALL GAMES</a>
+  </div>
+
+</div>
+
+  <script src="{% static 'js/aidetectorgame.js' %}" defer></script>
+</body>
+</html>

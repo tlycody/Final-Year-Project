@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Glossary - Cybersecurity Training Game</title>
+    
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'home' %}" class="back-link">← Back to Home</a>
+        
+        <h1>Cybersecurity Glossary</h1>
+
+        {% for term, definition in glossary_terms.items %}
+        <div class="glossary-item">
+            <div class="glossary-term">{{ term }}</div>
+            <div class="glossary-definition">{{ definition }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

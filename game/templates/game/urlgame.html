@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>URL Slayer | Cyber Security Training</title>
+
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/urlgame.css' %}">
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══ INTRO SCREEN ═════════════════════════ -->
+  <div id="screen-intro" class="screen visible">
+    <div class="intro-logo">URL THREAT DETECTION</div>
+
+    <div class="intro-grid">
+      <div class="intro-card">
+        <h3>HOW TO PLAY</h3>
+        <ul>
+          <li>URLs float down from the top of the screen</li>
+          <li>A new URL appears every <strong style="color:var(--text)">10 seconds</strong></li>
+          <li><strong style="color:var(--text)">Click</strong> any URL you think is suspicious</li>
+          <li>Identify <em>exactly</em> which part is the red flag</li>
+          <li>Slash and eliminate it before time runs out!</li>
+        </ul>
+      </div>
+
+      <div class="intro-card">
+        <h3>SCORING</h3>
+        <ul>
+          <li>Correct suspicious URL clicked — <strong style="color:var(--green)">+10 pts</strong></li>
+          <li>Correct suspicious part flagged — <strong style="color:var(--green)">+10 pts</strong></li>
+          <li>All threats found in time — <strong style="color:var(--green)">+50 pts</strong></li>
+          <li>Clicking a safe URL — <strong style="color:var(--red)">−30 pts</strong></li>
+          <li>Wrong part flagged in analysis — <strong style="color:var(--red)">−5 pts</strong></li>
+          <li>Missed suspicious part in analysis — <strong style="color:var(--amber)">−5 pts</strong></li>
+          <li>Missed suspicious URL at timer end — <strong style="color:var(--red)">−20 pts</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <button class="btn-start" onclick="startGame()">START PLAYING</button>
+  </div>
+
+  <!-- ═══ GAME SCREEN ═══════════════════════════ -->
+  <div id="screen-game" class="screen hidden" style="overflow:hidden; display:flex; flex-direction:column;">
+    <div id="hud">
+      <div class="hud-block">
+        <span class="hud-label">Score</span>
+        <span class="hud-value" id="hud-score">0</span>
+      </div>
+      <div class="hud-block center">
+        <span class="hud-title">URL THREAT DETECTION</span>
+        <span class="hud-sub" id="hud-sub">IDENTIFY &amp; ELIMINATE THREATS</span>
+      </div>
+      <div class="hud-block right">
+        <span class="hud-label">Time Left</span>
+        <span class="hud-value" id="timer-val">2:00</span>
+      </div>
+    </div>
+    <div id="ticker">Click suspicious URLs to eliminate them!</div>
+
+    <div id="game-stage"></div>
+
+    <div id="found-counter">
+      THREATS ELIMINATED: <span id="found-count">0</span>
+    </div>
+  </div>
+
+  <!-- ═══ GAME OVER SCREEN ══════════════════════ -->
+  <div id="screen-gameover" class="screen hidden">
+    <div class="go-title">MISSION COMPLETE</div>
+    <div class="go-score" id="go-score">0</div>
+    <div class="go-label">TOTAL SCORE</div>
+    <div class="go-grade" id="go-grade"></div>
+    <div class="go-breakdown">
+      <div class="go-bd-title">SCORE BREAKDOWN</div>
+      <div id="go-bd-rows"></div>
+    </div>
+    <button class="btn-start" onclick="restartGame()" style="margin-top:6px">PLAY AGAIN</button>
+  </div>
+
+  <!-- ═══ ANALYSIS MODAL ════════════════════════ -->
+  <div id="analysis-modal">
+    <div id="analysis-card">
+      <div class="analysis-title">🚨 THREAT DETECTED</div>
+      <div class="analysis-sub">CLICK THE SUSPICIOUS PARTS OF THIS URL</div>
+
+      <div class="analysis-url-box" id="analysis-url-display"></div>
+
+      <div class="parts-label">Select all suspicious URL parts:</div>
+      <div class="parts-row" id="parts-row"></div>
+
+      <div class="feedback-panel" id="feedback-panel"></div>
+      <div class="score-breakdown" id="score-breakdown" style="display:none"></div>
+
+      <div class="modal-btns" id="modal-btns">
+        <button class="btn-submit" id="btn-submit" onclick="submitAnalysis()">SUBMIT ANALYSIS</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+  <script src="{% static 'js/urlgame.js' %}" defer></script>
+</body>
+</html>
