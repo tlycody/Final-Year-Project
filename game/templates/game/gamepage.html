@@ -5,10 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <title>Play Game - Cybersecurity Training</title>
-    
+    <title>Play — BotBusters</title>
 </head>
 <body>
+    {% include 'game/navbar.html' %}
+
     <div class="container">
         <div class="header">
             <h1>Cybersecurity Training Game</h1>
@@ -18,43 +19,41 @@
         <h2 class="modules-heading">Select a Training Module:</h2>
 
         <div class="modules-grid">
-    
-
-    <!-- Module 1: Email Threat Detective -->
-<div class="module-card">
-    <div class="module-title">📧 Email Threat Detective</div>
-    <div class="module-description">
-        Learn to identify phishing emails, suspicious links, and email-based threats. 
-        Practice analyzing real-world examples of malicious emails.
-    </div>
-    <a href="{% url 'game1' %}" class="module-btn">Start Module</a>
-</div>
-
-            <!-- Module 2: Deepfake Detector -->
             <div class="module-card">
-                <div class="module-title"> Deepfake Detector</div>
+                <div class="module-title">📧 Email Threat Detective</div>
                 <div class="module-description">
-                    Train your eye to spot AI-generated deepfakes. Learn the telltale signs 
+                    Learn to identify phishing emails, suspicious links, and email-based threats.
+                    Practice analysing real-world examples of malicious emails.
+                </div>
+                <a href="{% url 'game1' %}" class="module-btn">Start Module</a>
+            </div>
+
+            <div class="module-card">
+                <div class="module-title">🕵 Deepfake Detector</div>
+                <div class="module-description">
+                    Train your eye to spot AI-generated deepfakes. Learn the telltale signs
                     of manipulated videos and images.
                 </div>
                 <a href="{% url 'game2' %}" class="module-btn">Start Module</a>
             </div>
-             
-        
 
-            <!-- Module 3: URL Analysis Lab -->
             <div class="module-card">
-                <div class="module-title"> URL Analysis Lab</div>
+                <div class="module-title">🔗 URL Analysis Lab</div>
                 <div class="module-description">
-                    Learn to analyze URLs and identify malicious websites. 
+                    Learn to analyse URLs and identify malicious websites.
                     Understand URL structures and common tricks used by attackers.
                 </div>
                 <a href="{% url 'game3' %}" class="module-btn">Start Module</a>
             </div>
-   
-
-            
         </div>
+
+        {% if not user.is_authenticated %}
+        <p style="text-align:center; margin-top:32px; color:var(--text-muted); font-size:var(--font-xs);">
+            Playing as guest — your scores will appear on the leaderboard as
+            <strong style="color:var(--green);">Guest #</strong>.
+            <a href="{% url 'register' %}">Register</a> to keep your progress and earn badges.
+        </p>
+        {% endif %}
     </div>
 </body>
 </html>

@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Profile — {{ profile_user.username }}</title>
+</head>
+<body>
+    {% include 'game/navbar.html' %}
+
+    <div class="container profile-container">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="profile-hero">
+            <div class="profile-avatar">{{ profile_user.username|slice:":1"|upper }}</div>
+            <div>
+                <div class="profile-name">{{ profile_user.username }}</div>
+                <div class="profile-meta">
+                    Joined {{ profile_user.date_joined|date:"d M Y" }}
+                    {% if profile_user.email %}· {{ profile_user.email }}{% endif %}
+                    {% if profile_user.is_staff %}· Developer{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <h2>Stats</h2>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-label">Games Played</div><div class="stat-value">{{ total_sessions }}</div></div>
+            <div class="stat-card"><div class="stat-label">Total Score</div> <div class="stat-value">{{ total_score }}</div></div>
+            <div class="stat-card"><div class="stat-label">Best Email</div>  <div class="stat-value">{{ best_email }}</div></div>
+            <div class="stat-card"><div class="stat-label">Best URL</div>    <div class="stat-value">{{ best_url }}</div></div>
+            <div class="stat-card"><div class="stat-label">Best AI</div>     <div class="stat-value">{{ best_ai }}</div></div>
+        </div>
+
+        <h2>Badges</h2>
+        <p style="font-size:var(--font-xs); color:var(--text-muted); margin-bottom:14px;">
+            {{ earned_badges|length }} of {{ all_badges|length }} earned.
+        </p>
+
+        <div class="badges-showcase">
+            {% for badge in all_badges %}
+                {% with locked=True %}
+                    {% for ub in earned_badges %}
+                        {% if ub.badge.code == badge.code %}{% with locked=False %}{% endwith %}{% endif %}
+                    {% endfor %}
+                    <div class="badge-tile tier-{{ badge.tier }}{% if locked %} locked{% endif %}">
+                        <span class="badge-icon">{{ badge.icon }}</span>
+                        <div class="badge-name">{{ badge.name }}</div>
+                        <div class="badge-desc">{{ badge.description }}</div>
+                    </div>
+                {% endwith %}
+            {% endfor %}
+        </div>
+
+        <h2>Recent Games</h2>
+        {% if sessions %}
+        <table class="history-table">
+            <thead>
+                <tr><th>Date</th><th>Game</th><th>Score</th><th>Verdicts</th><th>Flags</th></tr>
+            </thead>
+            <tbody>
+                {% for s in sessions %}
+                <tr>
+                    <td>{{ s.completed_at|date:"d M Y H:i" }}</td>
+                    <td>{{ s.get_game_display }}</td>
+                    <td>{{ s.score }}</td>
+                    <td>{{ s.correct_verdicts }} / {{ s.total_scenarios }}</td>
+                    <td>{{ s.flags_found }} / {{ s.flags_total }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="color:var(--text-dim);">No games played yet — <a href="{% url 'play_game' %}">start your first one</a>.</p>
+        {% endif %}
+
+        <div class="danger-zone">
+            <h2>Danger Zone</h2>
+            <p style="color:var(--text-dim); margin-bottom:14px;">
+                Permanently delete your account and all associated data. This cannot be undone.
+            </p>
+            <form method="post" action="{% url 'delete_account' %}"
+                  onsubmit="return confirm('Are you absolutely sure? This will permanently delete your account.');">
+                {% csrf_token %}
+                <div class="form-group" style="max-width:320px;">
+                    <label for="confirm">Type your username to confirm:</label>
+                    <input type="text" name="confirm" id="confirm" placeholder="{{ profile_user.username }}" required>
+                </div>
+                <button type="submit" class="btn-danger">Delete My Account</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

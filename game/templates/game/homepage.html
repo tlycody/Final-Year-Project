@@ -5,33 +5,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <title>Home</title>
-
+    <title>BotBusters - Home</title>
 </head>
 <body>
-    <!-- Top right navigation -->
-    <div class="top-right-nav">
-        <a href="{% url 'glossary' %}" class="nav-btn">Glossary</a>
-        <a href="{% url 'gdpr' %}" class="nav-btn">GDPR</a>
-    </div>
+    {% include 'game/navbar.html' %}
 
-    <!-- Main content -->
     <div class="main-content">
         <h1>Welcome to BotBusters!</h1>
-        
-        <div class="button-container">
-            <a href="{% url 'login' %}">
-                <button class="auth-btn login-btn">Login</button>
-            </a>
-            <a href="{% url 'register' %}">
-                <button class="auth-btn register-btn">Register</button>
-            </a>
-        </div>
+        <p class="tagline">This is a cybersecurity training game that helps you identify phishing messages, recognise deepfakes, and spot malicious URLs.</p>
 
+        {% if not user.is_authenticated %}
+        <div class="button-container">
+            <a href="{% url 'login' %}"><button class="auth-btn login-btn">Login</button></a>
+            <a href="{% url 'register' %}"><button class="auth-btn register-btn">Register</button></a>
+        </div>
         <div>
-            <a href="{% url 'play_game' %}">
-                <button class="play-btn">Start Game as Guest</button>
-            </a>
+            <a href="{% url 'play_game' %}"><button class="play-btn">Start as a Guest</button></a>
+        </div>
+        {% endif %}
+
+        <div class="info-section">
+            <h2>How to Play</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>Phishing Ninja</h3>
+                    <p>An email will slide onto the screen from the bottom. Highlight the parts that look suspicious, then choose whether the email is phishing or safe.</p>
+                </div>
+                <div class="info-card">
+                    <h3>Deepfake Detective</h3>
+                    <p>A scenario card appears — voice call, video, post or article. Spot AI-generated content by highlighting suspicious phrases and identifying the threat type.</p>
+                </div>
+                <div class="info-card">
+                    <h3>URL Hunter</h3>
+                    <p>URLs float around the screen. Click any that look suspicious, then choose the part that is unsafe (protocol, domain, TLD, or path). Remove them before time runs out.</p>
+                </div>
+            </div>
+
+            <h2>Badges &amp; Rewards</h2>
+            <h3 style="text-align:center; color:var(--text-dim); letter-spacing:0.18em; margin: 8px 0 14px;">Leaderboard Ranks</h3>
+            <div class="badges-showcase">
+                <div class="badge-tile tier-gold"><span class="badge-icon">🥇</span><div class="badge-name">#1 Overall</div><div class="badge-desc">Highest combined score across all 3 games</div></div>
+                <div class="badge-tile tier-silver"><span class="badge-icon">🥈</span><div class="badge-name">#2 Overall</div><div class="badge-desc">Second highest combined score</div></div>
+                <div class="badge-tile tier-bronze"><span class="badge-icon">🥉</span><div class="badge-name">#3 Overall</div><div class="badge-desc">Third highest combined score</div></div>
+                <div class="badge-tile tier-gold"><span class="badge-icon">🥇</span><div class="badge-name">#1 Phishing Ninja</div><div class="badge-desc">Highest score in Phishing Ninja</div></div>
+                <div class="badge-tile tier-silver"><span class="badge-icon">🥈</span><div class="badge-name">#2 Phishing Ninja</div><div class="badge-desc">Second highest score</div></div>
+                <div class="badge-tile tier-bronze"><span class="badge-icon">🥉</span><div class="badge-name">#3 Phishing Ninja</div><div class="badge-desc">Third highest score</div></div>
+                <div class="badge-tile tier-gold"><span class="badge-icon">🥇</span><div class="badge-name">#1 URL Slayer</div><div class="badge-desc">Highest score in URL Slayer</div></div>
+                <div class="badge-tile tier-silver"><span class="badge-icon">🥈</span><div class="badge-name">#2 URL Slayer</div><div class="badge-desc">Second highest score</div></div>
+                <div class="badge-tile tier-bronze"><span class="badge-icon">🥉</span><div class="badge-name">#3 URL Slayer</div><div class="badge-desc">Third highest score</div></div>
+                <div class="badge-tile tier-gold"><span class="badge-icon">🥇</span><div class="badge-name">#1 Deepfake Detector</div><div class="badge-desc">Highest score in Deepfake Detector</div></div>
+                <div class="badge-tile tier-silver"><span class="badge-icon">🥈</span><div class="badge-name">#2 Deepfake Detector</div><div class="badge-desc">Second highest score</div></div>
+                <div class="badge-tile tier-bronze"><span class="badge-icon">🥉</span><div class="badge-name">#3 Deepfake Detector</div><div class="badge-desc">Third highest score</div></div>
+            </div>
+
+            <h3 style="text-align:center; color:var(--text-dim); letter-spacing:0.18em; margin: 28px 0 14px;">Achievements</h3>
+            <div class="badges-showcase" style="max-width:520px; margin: 0 auto;">
+                <div class="badge-tile"><span class="badge-icon">⭐</span><div class="badge-name">Triple Threat</div><div class="badge-desc">Complete all three games at least once</div></div>
+                <div class="badge-tile"><span class="badge-icon">🛡</span><div class="badge-name">Flawless Defender</div><div class="badge-desc">No wrong verdicts across all three games</div></div>
+            </div>
+
+            <p style="text-align:center; margin-top:28px; font-size:var(--font-xs); color:var(--text-muted);">
+                {% if not user.is_authenticated %}
+                    <strong style="color:var(--green);">Register</strong> to claim badges and earn rank rewards. Guest scores still appear on the leaderboard.
+                {% else %}
+                    Visit your <a href="{% url 'profile' %}">profile</a> to see the badges you've earned.
+                {% endif %}
+            </p>
         </div>
     </div>
 </body>

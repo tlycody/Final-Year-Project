@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Dev Dashboard — BotBusters</title>
+</head>
+<body>
+    {% include 'game/navbar.html' %}
+
+    <div class="container">
+        <div class="header">
+            <h1>⚙ Developer Dashboard</h1>
+        </div>
+
+        <div class="dev-banner">
+            🔒 Staff-only view — players see neither this page nor a link to it.
+        </div>
+
+        <!-- Game tabs -->
+        <div class="leaderboard-tabs">
+            {% for code, label in tabs %}
+                <a href="?game={{ code }}"
+                   class="tab-btn {% if game == code %}active{% endif %}">{{ label }}</a>
+            {% endfor %}
+        </div>
+
+        <!-- Overview -->
+        <h2>Overview · {{ game|upper }}</h2>
+        <div class="metric-grid">
+            <div class="metric-card"><div class="metric-label">Total Plays</div>     <div class="metric-value">{{ overview.total_plays }}</div></div>
+            <div class="metric-card"><div class="metric-label">Unique Users</div>    <div class="metric-value">{{ overview.unique_users }}</div></div>
+            <div class="metric-card"><div class="metric-label">Unique Guests</div>   <div class="metric-value">{{ overview.unique_guests }}</div></div>
+            <div class="metric-card"><div class="metric-label">Avg Score</div>       <div class="metric-value">{{ overview.avg_score }}</div></div>
+            <div class="metric-card"><div class="metric-label">Avg Verdicts ✓</div>  <div class="metric-value">{{ overview.avg_verdicts }}</div></div>
+        </div>
+
+        <!-- Per-question accuracy -->
+        <div class="dev-section">
+            <h2>Per-Scenario Verdict Accuracy</h2>
+            <p class="dev-section-note">
+                For each scenario in this game, how many players gave the correct verdict
+                (phishing/safe, fake/genuine, suspicious/legit).
+            </p>
+
+            {% if question_rows %}
+                {% for q in question_rows %}
+                <div class="q-row">
+                    <div class="q-id">#{{ q.id }}</div>
+                    <div class="q-text">{{ q.attempts }} plays · {{ q.correct }} correct</div>
+                    <div class="q-accuracy">{{ q.pct }}%</div>
+                    <div class="bar-track">
+                        <div class="bar-fill {% if q.pct < 50 %}low{% elif q.pct < 75 %}med{% endif %}"
+                             style="--pct: {{ q.pct }}%;"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="dev-empty">No data yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Per-feature accuracy -->
+        <div class="dev-section">
+            <h2>Red-Flag Feature Identification</h2>
+            <p class="dev-section-note">
+                Each suspicious segment (phishing phrase, URL part, deepfake cue) and how many
+                players actually highlighted it. Low percentages signal features that need
+                clearer training material.
+            </p>
+
+            {% if feature_rows %}
+                <div class="feature-list">
+                    <div class="feature-row feature-row-head">
+                        <div class="feature-text">Feature (Scenario · Segment)</div>
+                        <div class="feature-stat">Found / Seen</div>
+                        <div class="feature-pct">%</div>
+                    </div>
+                    {% for f in feature_rows %}
+                    <div class="feature-row">
+                        <div class="feature-text">
+                            <strong class="feature-tag">[{{ f.scenario }} · {{ f.segment }}]</strong>
+                            <span class="feature-text-body">{{ f.text|truncatechars:80 }}</span>
+                        </div>
+                        <div class="feature-stat">{{ f.found }} / {{ f.seen }}</div>
+                        <div class="feature-pct {% if f.pct < 50 %}is-low{% elif f.pct < 75 %}is-mid{% endif %}">{{ f.pct }}%</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="dev-empty">No feature data yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

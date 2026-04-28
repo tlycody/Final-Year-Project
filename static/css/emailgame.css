@@ -9,7 +9,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:        #003c3c;
+  --bg:        #013938;
   --surface:   #004848;
   --surface2:  #005252;
   --border:    rgba(0,201,167,0.25);
@@ -34,27 +34,13 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════
-   SCANLINE & GRID BACKGROUND
+   PLAIN BACKGROUND OVERRIDE
+   Cancels any grid/scanline overlay from the site-wide style.css
 ═══════════════════════════════════════════ */
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background-image:
-    linear-gradient(rgba(0,201,167,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,201,167,0.03) 1px, transparent 1px);
-  background-size: 36px 36px;
-  pointer-events: none;
-  z-index: 0;
-}
+body::before,
 body::after {
-  content: '';
-  position: fixed; inset: 0;
-  background: repeating-linear-gradient(
-    0deg, transparent, transparent 2px,
-    rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px
-  );
-  pointer-events: none;
-  z-index: 1;
+  content: none !important;
+  background: none !important;
 }
 
 /* ═══════════════════════════════════════════

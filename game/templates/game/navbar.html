@@ -1,0 +1,19 @@
+<div class="nav-bar">
+    <a href="{% url 'leaderboard' %}" class="nav-btn">🏆 Leaderboard</a>
+    <a href="{% url 'glossary' %}" class="nav-btn">Glossary</a>
+    <a href="{% url 'gdpr' %}" class="nav-btn">GDPR</a>
+
+    {% if user.is_authenticated %}
+        {% if user.is_staff %}
+            <a href="{% url 'dev_dashboard' %}" class="nav-btn nav-btn-dev">⚙ Dev</a>
+        {% endif %}
+        <a href="{% url 'profile' %}" class="nav-btn profile-btn">👤 {{ user.username }}</a>
+        <form action="{% url 'logout' %}" method="post" class="nav-form">
+            {% csrf_token %}
+            <button type="submit" class="nav-btn logout-btn">Logout</button>
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}" class="nav-btn">Login</a>
+        <a href="{% url 'register' %}" class="nav-btn">Register</a>
+    {% endif %}
+</div>

@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Leaderboard — BotBusters</title>
+</head>
+<body>
+    {% include 'game/navbar.html' %}
+
+    <div class="container leaderboard-container">
+        <a href="{% url 'home' %}" class="back-link">← Back to Home</a>
+
+        <div class="header">
+            <h1>🏆 Leaderboard</h1>
+        </div>
+
+        <div class="leaderboard-tabs">
+            {% for code, label in tabs %}
+                <a href="?game={{ code }}" class="tab-btn {% if game_filter == code %}active{% endif %}">{{ label }}</a>
+            {% endfor %}
+        </div>
+
+        {% if rows %}
+        <table class="leaderboard-table">
+            <thead>
+                <tr><th class="rank-cell">Rank</th><th>Player</th><th class="score-cell">Best Score</th></tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                <tr class="{% if row.is_you %}is-you{% endif %}">
+                    <td class="rank-cell">#{{ forloop.counter }}</td>
+                    <td>
+                        {{ row.name }}
+                        {% if row.is_guest %}<span class="guest-tag">Guest</span>{% endif %}
+                        {% if row.is_you %}<span class="guest-tag" style="background:var(--green); color:var(--bg);">You</span>{% endif %}
+                    </td>
+                    <td class="score-cell">{{ row.score }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="text-align:center; color:var(--text-dim); padding:40px;">
+            No scores yet. Be the first to play!
+        </p>
+        {% endif %}
+
+        <p style="text-align:center; margin-top:24px; font-size:var(--font-xs); color:var(--text-muted);">
+            Showing top 50.
+            {% if not user.is_authenticated %}
+                <a href="{% url 'register' %}">Register</a> to keep your scores under your own name.
+            {% endif %}
+        </p>
+    </div>
+</body>
+</html>

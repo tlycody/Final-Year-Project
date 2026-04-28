@@ -6,7 +6,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:        #003c3c;
+  --bg:        #013938;
   --surface:   #004848;
   --surface2:  #005252;
   --green:     #00c9a7;
@@ -26,18 +26,11 @@ html, body {
   font-family: var(--mono); overflow: hidden; user-select: none;
 }
 
-/* Grid overlay */
-body::before {
-  content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background-image:
-    linear-gradient(rgba(0,201,167,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,201,167,0.04) 1px, transparent 1px);
-  background-size: 42px 42px;
-}
-/* Scanlines */
+/* Override any inherited grid/scanline overlays from the site-wide style.css */
+body::before,
 body::after {
-  content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
+  content: none !important;
+  background: none !important;
 }
 
 #app { position: relative; width: 100vw; height: 100vh; display: flex; flex-direction: column; z-index: 2; }
