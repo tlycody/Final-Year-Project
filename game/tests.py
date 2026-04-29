@@ -10,84 +10,68 @@ from .models import (
 )
 
 
-# ════════════════════════════════════════════════════════════════════
 # 1. FORM VALIDATION
-# ════════════════════════════════════════════════════════════════════
-class CustomUserCreationFormTests(TestCase):
-    """
-    Confirms the registration form enforces our username and password rules:
-      • Username: letters, digits, and @ . _ only. No spaces. No "guest..."
-      • Password: ≥ 8 characters, must include letters + digits + special chars
-    """
 
-    # ── Helper ────────────────────────────────────────────────────
+class CustomUserCreationFormTests(TestCase):
+
+    # Helper 
     def _form(self, username, password):
-        """Build a form instance with the given credentials."""
+       
         return CustomUserCreationForm(data={
             'username':  username,
             'password1': password,
             'password2': password,
         })
 
-    # ── Username ──────────────────────────────────────────────────
+    #  Username
     def test_valid_username_and_password_passes(self):
-        """A clean username and a strong password should validate."""
+       
         form = self._form('cody.dev_2025', 'Strong#Pass1')
         self.assertTrue(form.is_valid(), msg=form.errors)
 
     def test_username_with_space_is_rejected(self):
-        """Spaces are explicitly disallowed in usernames."""
+       
         form = self._form('cody dev', 'Strong#Pass1')
         self.assertFalse(form.is_valid())
         self.assertIn('username', form.errors)
 
     def test_username_with_disallowed_character_is_rejected(self):
-        """+ is not in the allowed character set (letters, digits, @ . _)."""
+       
         form = self._form('cody+dev', 'Strong#Pass1')
         self.assertFalse(form.is_valid())
         self.assertIn('username', form.errors)
 
     def test_username_starting_with_guest_is_reserved(self):
-        """'guest...' usernames are reserved for the guest player system."""
+        
         form = self._form('guest123', 'Strong#Pass1')
         self.assertFalse(form.is_valid())
         self.assertIn('username', form.errors)
 
     def test_duplicate_username_is_rejected_case_insensitive(self):
-        """An existing 'cody' should block 'CODY' from being registered."""
+      
         User.objects.create_user(username='cody', password='Strong#Pass1')
         form = self._form('CODY', 'Strong#Pass1')
         self.assertFalse(form.is_valid())
         self.assertIn('username', form.errors)
 
-    # ── Password ──────────────────────────────────────────────────
+    #  Password 
     def test_password_too_short_is_rejected(self):
-        """A 7-character password should fail (the rule is ≥ 8)."""
+    
         form = self._form('cody', 'Ab1!xyz')   # 7 chars
         self.assertFalse(form.is_valid())
         self.assertIn('password1', form.errors)
 
     def test_password_without_special_character_is_rejected(self):
-        """Letters + digits alone, no symbol — should fail."""
+       
         form = self._form('cody', 'Abcdefg1')
         self.assertFalse(form.is_valid())
         self.assertIn('password1', form.errors)
 
 
-# ════════════════════════════════════════════════════════════════════
 # 2. SUBMIT RESULT ENDPOINT
-# ════════════════════════════════════════════════════════════════════
+
 class SubmitResultViewTests(TestCase):
-    """
-    Confirms /api/submit-result/ correctly:
-      • Accepts a valid payload from a logged-in user → creates a
-        GameSession owned by that user
-      • Accepts a valid payload from an anonymous visitor → creates a
-        GuestPlayer + GameSession owned by the guest
-      • Persists the questions[] and features[] arrays as
-        QuestionResult and FeatureResult rows
-      • Rejects invalid game codes and malformed JSON
-    """
+
 
     URL = '/api/submit-result/'
 
@@ -97,7 +81,7 @@ class SubmitResultViewTests(TestCase):
         seed_badges()
         self.client = Client()
 
-    # ── Helper ────────────────────────────────────────────────────
+    #  Helper 
     def _payload(self, **overrides):
         """Build a sensible default payload, overriding any fields as needed."""
         base = {
@@ -126,7 +110,7 @@ class SubmitResultViewTests(TestCase):
             content_type='application/json',
         )
 
-    # ── Tests ─────────────────────────────────────────────────────
+    #  Tests 
     def test_logged_in_user_submission_creates_session(self):
         """A logged-in user's submission should create a GameSession owned by them."""
         user = User.objects.create_user(username='cody', password='Strong#Pass1')
@@ -145,7 +129,6 @@ class SubmitResultViewTests(TestCase):
         self.assertEqual(session.score, 320)
 
     def test_anonymous_submission_creates_guest_session(self):
-        """An anonymous submission should create a GuestPlayer and attach the session to it."""
         response = self._post(self._payload())
 
         self.assertEqual(response.status_code, 200)
@@ -157,7 +140,6 @@ class SubmitResultViewTests(TestCase):
         self.assertTrue(session.is_guest)
 
     def test_question_and_feature_rows_are_created(self):
-        """Each item in questions[] and features[] should become a database row."""
         self._post(self._payload())
         session = GameSession.objects.first()
 
@@ -170,13 +152,11 @@ class SubmitResultViewTests(TestCase):
         self.assertTrue(feature.identified)
 
     def test_invalid_game_code_returns_400(self):
-        """An unknown game code should be rejected before any DB write happens."""
         response = self._post(self._payload(game='not_a_game'))
         self.assertEqual(response.status_code, 400)
         self.assertEqual(GameSession.objects.count(), 0)
 
     def test_malformed_json_returns_400(self):
-        """A non-JSON body should be rejected gracefully, not crash the server."""
         response = self.client.post(
             self.URL, data='this is not json',
             content_type='application/json',
@@ -184,21 +164,8 @@ class SubmitResultViewTests(TestCase):
         self.assertEqual(response.status_code, 400)
 
 
-# ════════════════════════════════════════════════════════════════════
 # 3. BADGE AWARDING
-# ════════════════════════════════════════════════════════════════════
 class BadgeAwardingTests(TestCase):
-    """
-    Confirms the two automatic badge categories work as designed.
-
-    Personal badges (award_badges_for_session):
-      • Triple Threat       — earned after playing all three games once
-      • Flawless Defender   — earned when correct_verdicts == total_scenarios
-                              for the user's best run of every game
-
-    Rank badges (reassign_leaderboard_badges):
-      • #1 / #2 / #3 in each leaderboard, recomputed on every submission
-    """
 
     def setUp(self):
         seed_badges()
@@ -207,23 +174,23 @@ class BadgeAwardingTests(TestCase):
         )
 
     def _play(self, game, score, correct=1, total=1):
-        """Helper: create a GameSession for self.user."""
+
         return GameSession.objects.create(
             user=self.user, game=game, score=score,
             correct_verdicts=correct, total_scenarios=total,
         )
 
-    # ── seed_badges ───────────────────────────────────────────────
+    #  seed_badges 
     def test_seed_badges_creates_all_expected_badges(self):
-        """seed_badges() should leave exactly the 14 BotBusters badges."""
+     
         self.assertEqual(Badge.objects.count(), 14)
         self.assertTrue(Badge.objects.filter(code='triple_threat').exists())
         self.assertTrue(Badge.objects.filter(code='flawless_defender').exists())
         self.assertTrue(Badge.objects.filter(code='rank1_overall').exists())
 
-    # ── Triple Threat ─────────────────────────────────────────────
+    #  Triple Threat 
     def test_triple_threat_awarded_after_playing_all_three_games(self):
-        """Playing email + url + ai once each should grant Triple Threat."""
+        
         self._play('email', 100)
         self._play('url',   100)
         last = self._play('ai', 100)
@@ -235,7 +202,7 @@ class BadgeAwardingTests(TestCase):
         )
 
     def test_triple_threat_not_awarded_with_only_two_games(self):
-        """Two of three games played → no Triple Threat yet."""
+       
         self._play('email', 100)
         last = self._play('url', 100)
 
@@ -245,9 +212,9 @@ class BadgeAwardingTests(TestCase):
             UserBadge.objects.filter(user=self.user, badge__code='triple_threat').exists()
         )
 
-    # ── Flawless Defender ─────────────────────────────────────────
+    #  Flawless Defender 
     def test_flawless_defender_awarded_for_perfect_runs_in_all_games(self):
-        """Perfect verdicts across all three games → Flawless Defender."""
+      
         self._play('email', 100, correct=7, total=7)
         self._play('url',   100, correct=5, total=5)
         last = self._play('ai', 100, correct=7, total=7)
@@ -259,7 +226,7 @@ class BadgeAwardingTests(TestCase):
         )
 
     def test_flawless_defender_not_awarded_with_a_single_wrong_verdict(self):
-        """One wrong verdict in any game → no Flawless Defender."""
+        
         self._play('email', 100, correct=7, total=7)
         self._play('url',   100, correct=4, total=5)   # one missed
         last = self._play('ai', 100, correct=7, total=7)
@@ -270,9 +237,9 @@ class BadgeAwardingTests(TestCase):
             UserBadge.objects.filter(user=self.user, badge__code='flawless_defender').exists()
         )
 
-    # ── Rank badges ───────────────────────────────────────────────
+    #  Rank badges 
     def test_rank_badges_assigned_to_top_three_in_a_game(self):
-        """Three users with descending scores should each get the matching rank badge."""
+       
         gold   = self.user
         silver = User.objects.create_user(username='ada',   password='Strong#Pass1')
         bronze = User.objects.create_user(username='alan',  password='Strong#Pass1')
@@ -292,21 +259,15 @@ class BadgeAwardingTests(TestCase):
         self.assertFalse(UserBadge.objects.filter(user=nope, badge__code__startswith='rank').exists())
 
 
-# ════════════════════════════════════════════════════════════════════
 # 4. LEADERBOARD
-# ════════════════════════════════════════════════════════════════════
 class LeaderboardViewTests(TestCase):
-    """
-    Confirms the public leaderboard sorts players by their best score
-    (not their average, not their latest, not the sum of all runs).
-    """
-
+   
     # NOTE: if your urls.py uses a different path for the leaderboard,
     # update this URL constant accordingly.
     URL = '/leaderboard/'
 
     def test_leaderboard_orders_by_best_score(self):
-        """A user's best run is the only one that should appear, and the order should be descending."""
+        
         cody = User.objects.create_user(username='cody', password='Strong#Pass1')
         ada  = User.objects.create_user(username='ada',  password='Strong#Pass1')
 
@@ -326,31 +287,27 @@ class LeaderboardViewTests(TestCase):
         self.assertEqual(rows[1]['name'],  'ada')
 
 
-# ════════════════════════════════════════════════════════════════════
-# 5. DEV DASHBOARD ACCESS CONTROL
-# ════════════════════════════════════════════════════════════════════
+#5. DEV DASHBOARD ACCESS CONTROL
+
 class DevDashboardAccessTests(TestCase):
-    """
-    Confirms /dev/dashboard/ is locked down to staff users.
-    Anyone else should be redirected away.
-    """
+   
 
     URL = '/dev/dashboard/'
 
     def test_anonymous_user_is_redirected(self):
-        """No login → redirect (302), not page render."""
+        
         response = self.client.get(self.URL)
         self.assertEqual(response.status_code, 302)
 
     def test_regular_user_is_redirected(self):
-        """Logged in but not staff → redirect."""
+        
         User.objects.create_user(username='cody', password='Strong#Pass1')
         self.client.login(username='cody', password='Strong#Pass1')
         response = self.client.get(self.URL)
         self.assertEqual(response.status_code, 302)
 
     def test_staff_user_can_access_dashboard(self):
-        """is_staff=True → page renders normally (200)."""
+       
         User.objects.create_user(
             username='admin', password='Strong#Pass1', is_staff=True,
         )
