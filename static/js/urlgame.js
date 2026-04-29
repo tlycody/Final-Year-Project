@@ -2,7 +2,7 @@
 
 /* URL DATA */
 const URL_POOL = [
-  // ─── SUSPICIOUS (9) ─────────────────────────────
+  // Questions
   {
     id:'u1', display:'https://hsbc-secure-verify.com/login',
     verdict:'suspicious', 
@@ -152,6 +152,10 @@ let bdBonus       = 0;  // +50 if all found in time
 let bdMissed      = 0;  // -20 per missed
 let bdWrong       = 0;  // -30 per wrong safe click
 
+// Backend tracking — sent to /api/submit-result/ on game over
+let questionResults = [];   // one row per URL the player encountered
+let featureResults  = [];   // one row per suspicious URL part
+
 const stage = document.getElementById('game-stage');
 
 /* ═══════════════════════════════════════════════════
@@ -162,6 +166,7 @@ function startGame() {
   score = 0; timeLeft = 120; activeUrls = []; spawnIdx = 0;
   suspiciousFound = 0; modalOpen = false; analysisFlags = {};
   bdBase = 0; bdAnalysis = 0; bdBonus = 0; bdMissed = 0; bdWrong = 0;
+  questionResults = []; featureResults = [];
   phase = 'playing';
 
   // Clear stage
@@ -282,6 +287,16 @@ function onPillClick(urlObj) {
     addScore(-30, urlObj.el);
     bdWrong -= 30;
     urlObj.wronglyFlagged = true;
+
+    // Backend tracking — wrong verdict on a safe URL
+    questionResults.push({
+      id: urlObj.data.id,
+      verdict_correct: false,
+      flags_found: 0,
+      flags_total: 0,
+      points: -30,
+    });
+
     urlObj.el.classList.add('wrong-flash');
     showToast('❌ That URL was safe! −30 pts', 'bad');
     setTimeout(() => {
@@ -384,6 +399,22 @@ function submitAnalysis() {
   bdAnalysis += partScore;
   addScore(partScore, null);
 
+  // Backend tracking — record each suspicious part and whether the player flagged it.
+  // (Only suspicious parts count as "features" — safe parts are decoys, not red flags.)
+  parts.filter(p => p.sus).forEach(part => {
+    featureResults.push({
+      scenario:   urlObj.data.id,
+      segment:    part.id,
+      text:       (part.label + ': ' + part.text).slice(0, 255),
+      identified: !!analysisFlags[part.id],
+    });
+  });
+  // Stash the round's accuracy on the URL so confirmEliminate can include it
+  // in the questionResult payload.
+  urlObj.partsCorrect = correct;
+  urlObj.partsTotal   = parts.filter(p => p.sus).length;
+  urlObj.partsScore   = partScore;
+
   // Build feedback
   const fp = document.getElementById('feedback-panel');
   fp.innerHTML = '';
@@ -428,6 +459,15 @@ function confirmEliminate() {
   urlObj.identified = true;
   suspiciousFound++;
   document.getElementById('found-count').textContent = suspiciousFound;
+
+  // Backend tracking — correct verdict on a suspicious URL
+  questionResults.push({
+    id: urlObj.data.id,
+    verdict_correct: true,
+    flags_found: urlObj.partsCorrect || 0,
+    flags_total: urlObj.partsTotal   || 0,
+    points: 10 + (urlObj.partsScore || 0),
+  });
 
   slashPill(urlObj);
 
@@ -588,6 +628,44 @@ function endGame() {
     u.el.style.boxShadow = '0 0 20px rgba(255,193,7,0.5)';
   });
 
+  // ─── Backend tracking: any URL that spawned but the player never
+  // clicked on still needs a verdict row. activeUrls contains every
+  // spawned URL that hasn't been removed (correctly-eliminated and
+  // wrongly-flagged URLs are removed after their animations).
+  const handledIds = new Set(questionResults.map(q => q.id));
+  activeUrls.forEach(u => {
+    if (handledIds.has(u.data.id)) return;       // already recorded
+    if (u.data.verdict === 'suspicious') {
+      // Suspicious URL the player ignored = wrong verdict
+      questionResults.push({
+        id: u.data.id,
+        verdict_correct: false,
+        flags_found: 0,
+        flags_total: u.data.parts.filter(p => p.sus).length,
+        points: -20,
+      });
+      // Treat all its red flags as un-identified so the dashboard
+      // can surface which threats players consistently miss.
+      u.data.parts.filter(p => p.sus).forEach(part => {
+        featureResults.push({
+          scenario:   u.data.id,
+          segment:    part.id,
+          text:       (part.label + ': ' + part.text).slice(0, 255),
+          identified: false,
+        });
+      });
+    } else {
+      // Safe URL the player correctly left alone = correct verdict
+      questionResults.push({
+        id: u.data.id,
+        verdict_correct: true,
+        flags_found: 0,
+        flags_total: 0,
+        points: 0,
+      });
+    }
+  });
+
   setTimeout(() => showGameOver(), 1200);
 }
 
@@ -649,12 +727,21 @@ function showGameOver() {
 
   showScreen('screen-gameover');
 
-  // ADDED: Submit the URL game score to the backend
+  // Submit the URL game result to the backend
   if (window.BotBusters) {
+    const correctVerdicts = questionResults.filter(q => q.verdict_correct).length;
+    const flagsFound      = featureResults.filter(f => f.identified).length;
+    const flagsTotal      = featureResults.length;
+
     BotBusters.submitResult({
       game: 'url',
       score: score,
-      total_scenarios: suspiciousTotal
+      correct_verdicts: correctVerdicts,
+      total_scenarios:  questionResults.length,
+      flags_found:      flagsFound,
+      flags_total:      flagsTotal,
+      questions:        questionResults,
+      features:         featureResults,
     }).then(r => console.log('[BotBusters] URL result submitted:', r));
   } else {
     console.warn('[BotBusters] tracker not loaded — check script tag in urlgame.html');

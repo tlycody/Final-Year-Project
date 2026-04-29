@@ -1,9 +1,3 @@
-/* ═══════════════════════════════════════════════════════════════
-   CYBERSECURITY TRAINING — UNIFIED STYLESHEET (v5.5)
-   Fix: nav bar uses NO positioning. Sits at the top of the page
-   as a flex row. Works identically on every page.
-═══════════════════════════════════════════════════════════════ */
-
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }

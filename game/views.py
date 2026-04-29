@@ -1,10 +1,3 @@
-"""
-game/views.py — v3
-==================
-Adds: rank badges are reassigned every time a result is submitted, so
-the gold/silver/bronze badges always reflect the current top-3.
-"""
-
 import json
 
 from django.shortcuts import render, redirect
@@ -258,8 +251,8 @@ def leaderboard_view(request):
         'tabs': [
             ('total', 'Overall'),
             ('email', 'Phishing Ninja'),
-            ('url',   'URL Slayer'),
-            ('ai',    'Deepfake Detector'),
+            ('url',   'URL Hunter'),
+            ('ai',    'Deepfake Detective'),
         ],
     })
 
@@ -326,8 +319,8 @@ def dev_dashboard_view(request):
         'feature_rows':  feature_rows,
         'tabs': [
             ('email', 'Phishing Ninja'),
-            ('url',   'URL Slayer'),
-            ('ai',    'Deepfake Detector'),
+            ('url',   'URL Hunter'),
+            ('ai',    'Deepfake Detective'),
         ],
     })
 

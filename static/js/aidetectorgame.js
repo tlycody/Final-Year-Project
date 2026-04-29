@@ -187,12 +187,24 @@ let wrongHighlights = 0;
 let gamePhase      = 'reading';
 let cardReady      = false;
 
+// Backend tracking — sent to /api/submit-result/ on game over
+let questionResults    = [];   // one row per scenario
+let featureResults     = [];   // one row per suspicious segment
+let correctVerdictsCnt = 0;
+let flagsFoundTotal    = 0;
+let flagsTotalTotal    = 0;
+
 /* ═══════════════════════════════════════════════════════════════
    START / RESTART
 ═══════════════════════════════════════════════════════════════ */
 function startGame() {
   scenarioIndex  = 0;
   totalScore     = 0;
+  questionResults    = [];
+  featureResults     = [];
+  correctVerdictsCnt = 0;
+  flagsFoundTotal    = 0;
+  flagsTotalTotal    = 0;
   show('screen-game');
   loadScenario(0);
 }
@@ -200,6 +212,11 @@ function startGame() {
 function restartGame() {
   scenarioIndex  = 0;
   totalScore     = 0;
+  questionResults    = [];
+  featureResults     = [];
+  correctVerdictsCnt = 0;
+  flagsFoundTotal    = 0;
+  flagsTotalTotal    = 0;
   document.getElementById('hud-score').textContent = '0';
   show('screen-gameover');
   show('screen-intro');
@@ -528,6 +545,39 @@ function spawnParticles(cx, cy) {
    RESULT OVERLAY
 ═══════════════════════════════════════════════════════════════ */
 function showResult(success, icon, title, msg, basePoints, correctHighlights, bonus, sc) {
+  // ─── Backend tracking ─────────────────────────────────────────
+  // Every scenario passes through here (both verdict='safe' and the
+  // slash flow), so this is the single place to record results.
+  const verdictCorrect = !!success;
+  const roundPoints    = basePoints + (correctHighlights * 30) + bonus;
+
+  if (verdictCorrect) correctVerdictsCnt++;
+  flagsFoundTotal += correctHighlights;
+  flagsTotalTotal += sc.suspiciousCount || 0;
+
+  questionResults.push({
+    id: String(sc.id),
+    verdict_correct: verdictCorrect,
+    flags_found: correctHighlights,
+    flags_total: sc.suspiciousCount || 0,
+    points: roundPoints,
+  });
+
+  // Only text scenarios have suspicious segments — audio/video clips
+  // have no segment-level red flags, so featureResults stays empty for
+  // those (which is correct: there's nothing to highlight on a clip).
+  if (sc.segments && sc.segments.length) {
+    sc.segments.filter(s => s.sus).forEach(seg => {
+      featureResults.push({
+        scenario:   String(sc.id),
+        segment:    seg.id,
+        text:       (seg.text || '').slice(0, 255),
+        identified: !!(highlighted[seg.id] && highlighted[seg.id].correct),
+      });
+    });
+  }
+  // ──────────────────────────────────────────────────────────────
+
   const overlay = document.getElementById('result-overlay');
   document.getElementById('res-icon').textContent = icon;
 
@@ -607,12 +657,17 @@ function nextScenario() {
     document.getElementById('go-score').textContent = totalScore;
     show('screen-gameover');
 
-    // ADDED: Submit the AI game score to the backend
+    // Submit the AI game result to the backend
     if (window.BotBusters) {
       BotBusters.submitResult({
         game: 'ai',
-        score: totalScore,
-        total_scenarios: SCENARIOS.length
+        score:            totalScore,
+        correct_verdicts: correctVerdictsCnt,
+        total_scenarios:  SCENARIOS.length,
+        flags_found:      flagsFoundTotal,
+        flags_total:      flagsTotalTotal,
+        questions:        questionResults,
+        features:         featureResults,
       }).then(r => console.log('[BotBusters] AI result submitted:', r));
     } else {
       console.warn('[BotBusters] tracker not loaded — check script tag in aidetectorgame.html');

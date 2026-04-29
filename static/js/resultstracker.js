@@ -1,34 +1,4 @@
-/* ============================================================
-   BotBusters — Game Result Tracker
-   ============================================================
-   Drop-in helper that the three games call at the end of a run.
-
-   Usage in a game:
-
-       BotBusters.submitResult({
-         game: 'email',                 // 'email' | 'url' | 'ai'
-         score: totalScore,
-         correct_verdicts: ...,
-         total_scenarios:  EMAILS.length,
-         flags_found:      ...,
-         flags_total:      ...,
-         questions: [
-           { id: '1', verdict_correct: true,  flags_found: 3, flags_total: 5, points: 90 },
-           ...
-         ],
-         features: [
-           { scenario: '1', segment: 's4', text: 'unusual activity...', identified: true },
-           ...
-         ]
-       }).then(res => {
-         if (res.new_badges && res.new_badges.length) {
-           // Optionally show a "you earned a badge!" toast
-         }
-       });
-
-   Include this BEFORE each game's main script:
-       <script src="{% static 'js/botbusters_tracker.js' %}"></script>
-   ============================================================ */
+/* BotBusters — Game Result Tracker */
 
 (function () {
   'use strict';

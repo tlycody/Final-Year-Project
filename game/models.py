@@ -1,20 +1,3 @@
-"""
-models.py — v3
-==============
-Database schema + badge-awarding logic for BotBusters.
-
-Badges (only these):
-  • Top-3 Overall (sum of best score across all 3 games):  gold/silver/bronze
-  • Top-3 Phishing Ninja:    gold/silver/bronze
-  • Top-3 URL Slayer:        gold/silver/bronze
-  • Top-3 Deepfake Detector: gold/silver/bronze
-  • Triple Threat — completed all three games at least once
-  • Flawless Defender — no wrong verdicts across all three games
-
-The leaderboard rank badges are reassigned every time a new result is
-submitted, so that #1/#2/#3 always reflect the current standings.
-"""
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -48,8 +31,8 @@ class GuestPlayer(models.Model):
 # ════════════════════════════════════════════════════════════════
 GAME_CHOICES = [
     ('email', 'Phishing Ninja'),
-    ('url',   'URL Slayer'),
-    ('ai',    'Deepfake Detector'),
+    ('url',   'URL Hunter'),
+    ('ai',    'Deepfake Detective'),
 ]
 
 
@@ -278,15 +261,15 @@ def seed_badges():
         ('rank2_email',   '#2 Phishing Ninja',  'Second highest score in Phishing Ninja',         'silver', '🥈'),
         ('rank3_email',   '#3 Phishing Ninja',  'Third highest score in Phishing Ninja',          'bronze', '🥉'),
 
-        # ── URL Slayer top 3 ──
-        ('rank1_url',     '#1 URL Slayer',      'Highest score in URL Slayer',                    'gold',   '🥇'),
-        ('rank2_url',     '#2 URL Slayer',      'Second highest score in URL Slayer',             'silver', '🥈'),
-        ('rank3_url',     '#3 URL Slayer',      'Third highest score in URL Slayer',              'bronze', '🥉'),
+        # ── URL Hunter top 3 ──
+        ('rank1_url',     '#1 URL Hunter',      'Highest score in URL Hunter',                    'gold',   '🥇'),
+        ('rank2_url',     '#2 URL Hunter',      'Second highest score in URL Hunter',             'silver', '🥈'),
+        ('rank3_url',     '#3 URL Hunter',      'Third highest score in URL Hunter',              'bronze', '🥉'),
 
-        # ── Deepfake Detector top 3 ──
-        ('rank1_ai',      '#1 Deepfake Detector', 'Highest score in Deepfake Detector',           'gold',   '🥇'),
-        ('rank2_ai',      '#2 Deepfake Detector', 'Second highest score in Deepfake Detector',    'silver', '🥈'),
-        ('rank3_ai',      '#3 Deepfake Detector', 'Third highest score in Deepfake Detector',     'bronze', '🥉'),
+        # ── Deepfake Detective top 3 ──
+        ('rank1_ai',      '#1 Deepfake Detective', 'Highest score in Deepfake Detective',           'gold',   '🥇'),
+        ('rank2_ai',      '#2 Deepfake Detective', 'Second highest score in Deepfake Detective',    'silver', '🥈'),
+        ('rank3_ai',      '#3 Deepfake Detective', 'Third highest score in Deepfake Detective',     'bronze', '🥉'),
 
         # ── Special ──
         ('triple_threat',     'Triple Threat',     'Complete all three games at least once',       'special', '⭐'),
@@ -303,5 +286,4 @@ def seed_badges():
         )
 
     # Remove any old badges that aren't in the new list (clean migration
-    # from earlier versions like 'rookie', 'phish_slayer', 'cyber_sentinel').
     Badge.objects.exclude(code__in=desired_codes).delete()

@@ -1,14 +1,3 @@
-"""
-forms.py
-========
-Custom user registration form for BotBusters.
-
-Implements Cody's specific rules:
-  • Username: letters, digits, and @ . _ only (NO spaces, NO + - / etc.)
-  • Password: ≥ 8 characters, mix of letters + numbers + special characters
-  • No Django default help_text shown (unless user explicitly violates a rule)
-"""
-
 import re
 
 from django import forms
