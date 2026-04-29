@@ -6,7 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <title>BotBusters - Glossary</title>
-    
+    <style>
+        /* A little extra styling for the category headers */
+        .glossary-category {
+            color: var(--green, #00c9a7); /* Using your game's green variable */
+            margin-top: 40px;
+            margin-bottom: 15px;
+            font-family: var(--display, Arial, sans-serif);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(0, 201, 167, 0.3);
+            padding-bottom: 8px;
+        }
+    </style>
 </head>
 <body>
 
@@ -15,13 +27,19 @@
     <div class="container">
         <a href="{% url 'home' %}" class="back-link">← Back to Home</a>
         
-        <h1> Glossary</h1>
+        <h1>Glossary</h1>
 
-        {% for term, definition in glossary_terms.items %}
-        <div class="glossary-item">
-            <div class="glossary-term">{{ term }}</div>
-            <div class="glossary-definition">{{ definition }}</div>
-        </div>
+        {% for category, terms in glossary_terms.items %}
+            
+            <h2 class="glossary-category">{{ category }}</h2>
+            
+            {% for term, definition in terms.items %}
+            <div class="glossary-item">
+                <div class="glossary-term">{{ term }}</div>
+                <div class="glossary-definition">{{ definition }}</div>
+            </div>
+            {% endfor %}
+
         {% endfor %}
     </div>
 </body>

@@ -53,21 +53,44 @@ def game3(request):
 
 
 GLOSSARY_TERMS = {
-    'Phishing':         'A social-engineering attack where attackers impersonate a trusted source by email, text, or phone in order to trick the victim into revealing credentials or clicking malicious links.',
-    'Spear Phishing':   'A targeted phishing attack aimed at a specific individual or organisation, using personal details to appear more convincing.',
-    'Deepfake':         'AI-generated synthetic media (audio, image, or video) that imitates a real person — often used to impersonate executives, family members, or public figures.',
-    'AI Voice Clone':   'A type of deepfake that replicates a person\'s voice from short audio samples, often used in scam phone calls or voice-message fraud.',
-    'Typosquatting':    'Registering domain names that look like a real brand but contain a typo (e.g. arnazon.com instead of amazon.com) to trick users.',
-    'Homograph Attack': 'Using lookalike characters (e.g. the digit 0 instead of the letter o, or "rn" instead of "m") in a domain name to impersonate a legitimate site.',
-    'URL Shortener':    'A service like bit.ly that hides the real destination of a link behind a short alias. Often abused to obscure phishing or malicious URLs.',
-    'TLD':              'Top-Level Domain — the part of a URL after the final dot (e.g. .com, .net, .org). Wrong TLDs (e.g. paypal.net) are a common phishing indicator.',
-    'HTTPS':            'Encrypted version of HTTP. Indicates the connection is private — but does NOT prove the site is legitimate, since attackers can also obtain certificates.',
-    'Two-Factor Authentication': 'A security method requiring two forms of verification (typically password + a code or device) to log in. Strongly defends against credential phishing.',
-    'Credential Harvesting': 'A scam designed to capture usernames and passwords, usually via a fake login page that looks identical to a real one.',
-    'Social Engineering': 'Manipulating people into giving up information or access by exploiting trust, urgency, fear, or authority — rather than by hacking systems directly.',
-    'CEO Fraud':        'A scam where attackers impersonate a senior executive to pressure staff into urgent wire transfers or sharing sensitive information.',
-    'Spoofing':         'Faking the apparent source of a message — e.g. caller ID spoofing, email sender spoofing, or domain spoofing.',
-    'Red Flag':         'A specific suspicious indicator within a message, URL, or interaction (e.g. urgent language, unusual sender, mismatched links) that signals potential fraud.',
+    'Deception & Social Engineering': {
+        'Social Engineering': 'Manipulating people into giving up information or access by exploiting trust, urgency, fear, or authority — rather than by hacking systems directly.',
+        'Phishing': 'A social-engineering attack where attackers impersonate a trusted source by email, text, or phone in order to trick the victim into revealing credentials or clicking malicious links.',
+        'Spear Phishing': 'A targeted phishing attack aimed at a specific individual or organisation, using personal details to appear more convincing.',
+        'Smishing & Vishing': 'Variations of phishing. "Smishing" happens via SMS/text messages, and "Vishing" happens over voice/phone calls.',
+        'Advance-Fee Fraud': 'A scam where a victim is asked to pay a small upfront fee (like shipping or handling) to claim a non-existent prize or larger sum of money.',
+        'CEO Fraud': 'A scam where attackers impersonate a senior executive to pressure staff into urgent wire transfers or sharing sensitive information.',
+        'Credential Harvesting': 'A scam designed to capture usernames and passwords, usually via a fake login page that looks identical to a real one.',
+        'Spoofing': 'Faking the apparent source of a message — e.g. caller ID spoofing, email sender spoofing, or domain spoofing.',
+        'Artificial Urgency': 'A social engineering tactic using fake deadlines or threats (e.g., "Account suspended in 24 hours") to panic the victim into acting without thinking.'
+    },
+    'Web & URL Navigation': {
+        'Domain Name': 'The main address of a website (e.g., amazon.com). Checking this is the most critical step in verifying if a link is safe.',
+        'Subdomain': 'A prefix added to a domain name. Attackers often use subdomains to trick you into trusting a fake site (e.g., support.paypal.com.evil.net is controlled by evil.net).',
+        'TLD (Top-Level Domain)': 'The part of a URL after the final dot (e.g. .com, .net, .org). Wrong TLDs (e.g. paypal.net) are a common phishing indicator.',
+        'Protocol (HTTP/HTTPS)': 'The set of rules used to transfer data. HTTPS is encrypted, but attackers can still get certificates for fake sites. You should never enter payment details on an unencrypted HTTP connection.',
+        'Typosquatting': 'Registering domain names that look like a real brand but contain a typo (e.g. arnazon.com instead of amazon.com) to trick users.',
+        'Homograph Attack': 'Using lookalike characters (e.g. the digit 0 instead of the letter o, or "rn" instead of "m") in a domain name to impersonate a legitimate site.',
+        'URL Shortener': 'A service like bit.ly that hides the real destination of a link behind a short alias. Often abused to obscure phishing or malicious URLs.'
+    },
+    'Malware & Intrusions': {
+        'Malware': 'A catch-all term for malicious software (like viruses, worms, or Trojans) designed to damage, disrupt, or gain unauthorized access to a system.',
+        'Ransomware': 'A type of malware that locks or encrypts a victim\'s files, demanding a payment (ransom) to restore access.',
+        'Botnet': 'A network of hijacked computers and devices infected with malware, controlled remotely by an attacker to send spam, launch attacks, or mine cryptocurrency.',
+        'Data Breach': 'A security incident where unauthorized individuals gain access to sensitive, protected, or confidential data from a company or database.'
+    },
+    'AI & Synthetic Media': {
+        'Deepfake': 'AI-generated synthetic media (audio, image, or video) that imitates a real person — often used to impersonate executives, family members, or public figures.',
+        'AI Voice Clone': 'A type of deepfake that replicates a person\'s voice from short audio samples, often used in scam phone calls or voice-message fraud.'
+    },
+    'Security Tools & Defenses': {
+        'Two-Factor Authentication (2FA)': 'A security method requiring two forms of verification (typically password + a code or device) to log in. Strongly defends against credential phishing.',
+        'Password Manager': 'A secure software application used to store, generate, and manage strong, unique passwords for various online accounts.',
+        'Encryption': 'The process of scrambling data into an unreadable format that can only be unlocked with a specific digital key or password.',
+        'VPN (Virtual Private Network)': 'A service that creates a secure, encrypted connection between your device and the internet, masking your online activity.',
+        'Reverse Image Search': 'A technique used to find the original source of an image to check if it has been manipulated, AI-generated, or taken out of context.',
+        'Red Flag': 'A specific suspicious indicator within a message, URL, or interaction (e.g. urgent language, unusual sender, mismatched links) that signals potential fraud.'
+    }
 }
 
 
