@@ -1,11 +1,4 @@
-/* ============================================================
-   Email Threat Detective — Game-specific styles
-   Loaded in addition to the site-wide style.css
-   ============================================================ */
-
-/* ═══════════════════════════════════════════
-   ROOT & RESET
-═══════════════════════════════════════════ */
+/* ROOT & RESET */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -33,19 +26,14 @@ html, body {
   overflow: hidden;
 }
 
-/* ═══════════════════════════════════════════
-   PLAIN BACKGROUND OVERRIDE
-   Cancels any grid/scanline overlay from the site-wide style.css
-═══════════════════════════════════════════ */
+/* PLAIN BACKGROUND */
 body::before,
 body::after {
-  content: none !important;
-  background: none !important;
+  content: none ;
+  background: none ;
 }
 
-/* ═══════════════════════════════════════════
-   SCREENS WRAPPER
-═══════════════════════════════════════════ */
+/* SCREENS WRAPPER */
 #app {
   position: relative;
   width: 100vw; height: 100vh;
@@ -63,9 +51,7 @@ body::after {
 .screen.hidden { opacity: 0; pointer-events: none; transform: translateY(12px); }
 .screen.visible { opacity: 1; pointer-events: all; transform: translateY(0); }
 
-/* ═══════════════════════════════════════════
-   HUD BAR
-═══════════════════════════════════════════ */
+/* HUD BAR */
 #hud {
   width: 100%; max-width: 680px;
   display: flex; justify-content: space-between; align-items: center;
@@ -82,9 +68,7 @@ body::after {
 .hud-value { font-size: 20px; color: var(--green); font-weight: bold; letter-spacing: 2px; font-family: var(--display); }
 .hud-title  { font-size: 14px; color: var(--green); letter-spacing: 5px; font-weight: 700; font-family: var(--display); text-shadow: 0 0 12px var(--green-glow); }
 
-/* ═══════════════════════════════════════════
-   INSTRUCTION TICKER
-═══════════════════════════════════════════ */
+/* INSTRUCTION TICKER */
 #ticker {
   width: 100%; max-width: 680px;
   font-size: 10px; color: var(--text-dim);
@@ -94,9 +78,7 @@ body::after {
   flex-shrink: 0;
 }
 
-/* ═══════════════════════════════════════════
-   EMAIL VIEWPORT (the stage)
-═══════════════════════════════════════════ */
+/* EMAIL VIEWPORT (the stage) */
 #email-stage {
   flex: 1;
   width: 100%; max-width: 680px;
@@ -105,9 +87,7 @@ body::after {
   overflow-x: hidden;
 }
 
-/* ═══════════════════════════════════════════
-   EMAIL CARD
-═══════════════════════════════════════════ */
+/* EMAIL CARD */
 #email-card {
   position: absolute;
   left: 50%; transform: translateX(-50%);
@@ -273,9 +253,7 @@ body::after {
   color: #6d4c00;
 }
 
-/* ═══════════════════════════════════════════
-   SLASH ANIMATION
-═══════════════════════════════════════════ */
+/* SLASH ANIMATION */
 #slash-canvas {
   position: absolute; inset: 0;
   pointer-events: none;
@@ -337,9 +315,7 @@ body::after {
   z-index: 51;
 }
 
-/* ═══════════════════════════════════════════
-   FEEDBACK BUBBLE
-═══════════════════════════════════════════ */
+/* FEEDBACK BUBBLE */
 #feedback-bubble {
   width: 94%; max-width: 640px;
   background: #002a2a;
@@ -362,9 +338,7 @@ body::after {
 .fb-title.bad  { color: var(--orange); }
 .fb-body { font-size: 11px; color: rgba(255,255,255,0.55); line-height: 1.6; }
 
-/* ═══════════════════════════════════════════
-   SCORE POPUP (floats up on points)
-═══════════════════════════════════════════ */
+/* SCORE POPUP (floats up on points)*/
 .score-popup {
   position: fixed;
   font-family: var(--display);
