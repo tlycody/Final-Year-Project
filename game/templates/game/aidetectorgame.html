@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BotBusters - Deepfake Detector</title>
+  <title>BotBusters - Deepfake Detective</title>
 
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <link rel="stylesheet" href="{% static 'css/aidetectorgame.css' %}">
@@ -50,9 +50,7 @@
     <button class="btn-start" onclick="startGame()">▶ START GAME</button>
   </div>
 
-  <!-- ══════════════════════════════
-       GAME SCREEN
-  ══════════════════════════════ -->
+  <!-- Instructions -->
   <div id="screen-game" class="screen hidden" style="overflow:hidden;">
 
     <div id="hud">
@@ -61,7 +59,7 @@
         <span class="hud-value" id="hud-score">0</span>
       </div>
       <div class="hud-block">
-        <span class="hud-title">🕵 DEEPFAKE DETECTOR</span>
+        <span class="hud-title">Deepfake Detector</span>
       </div>
       <div class="hud-block right">
         <span class="hud-label">Scenario</span>
@@ -69,7 +67,7 @@
       </div>
     </div>
 
-    <div id="ticker">👆 CLICK SUSPICIOUS TEXT TO HIGHLIGHT · THEN DELIVER YOUR VERDICT</div>
+    <div id="ticker">Click any text that looks like a deepfake, then choose whether the email is AI-generated or safe.</div>
 
     <div id="card-stage">
       <div id="scenario-card">
@@ -91,16 +89,14 @@
     </div>
 
     <div id="action-bar">
-      <button class="btn-fake" onclick="selectVerdict('fake')">⚔ AI FAKE — CUT IT</button>
-      <button class="btn-safe" onclick="selectVerdict('safe')">✅ GENUINE — LET IT PASS</button>
+      <button class="btn-fake" onclick="selectVerdict('fake')">FAKE</button>
+      <button class="btn-safe" onclick="selectVerdict('safe')">GENUINE</button>
     </div>
 
-    <div id="slash-hint" style="display:none;">⚔ CLICK ANYWHERE ON THE CARD TO SLASH IT ⚔</div>
+    <div id="slash-hint" style="display:none;">Click anywhere on the message to cut it.</div>
   </div>
 
-  <!-- ══════════════════════════════
-       RESULT OVERLAY
-  ══════════════════════════════ -->
+  <!-- Results -->
   <div id="result-overlay">
     <div id="result-card">
       <div class="result-icon"        id="res-icon"></div>
@@ -114,16 +110,14 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════
-       GAME OVER SCREEN
-  ══════════════════════════════ -->
+  <!-- End of Deepfake Detective Game -->
   <div id="screen-gameover" class="screen hidden">
     <div class="go-title">MISSION COMPLETE</div>
     <div class="go-score" id="go-score">0</div>
     <div class="go-label">TOTAL SCORE</div>
-    <p class="go-sub">You've completed all AI threat scenarios.<br>Remember: always verify through a separate, trusted channel.</p>
+    <p class="go-sub">You’ve completed all the phishing scenarios in the Deepfake Detective game.</p>
     <button class="btn-start" onclick="restartGame()" style="margin-top:8px">↺ PLAY AGAIN</button>
-    <a class="btn-start" href="{% url 'play_game' %}" style="margin-top:8px;text-decoration:none;display:block;">← ALL GAMES</a>
+    <a class="btn-start" href="{% url 'play_game' %}" style="margin-top:8px;text-decoration:none;display:block;">←Back to All Games</a>
   </div>
 
 </div>

@@ -1,8 +1,4 @@
-/* ============================================================
-   Deepfake Detector — Game-specific styles
-   Loaded in addition to the site-wide style.css
-   ============================================================ */
-
+/* ROOT & RESET */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -431,9 +427,8 @@ body::after {
 @keyframes splitBottom { from{transform:translateY(0) rotate(0deg);opacity:1}   to{transform:translateY(60px) rotate(3deg);opacity:0} }
 @keyframes particleFly { 0%{transform:translate(0,0) scale(1);opacity:1} 100%{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0} }
 @keyframes flashIn     { 0%{opacity:0.7} 100%{opacity:0} }
-/* ══════════════════════════════════════════════════════════
-   MEDIA PLAYBACK SCENARIOS (audio / video)
-══════════════════════════════════════════════════════════ */
+
+/* MEDIA PLAYBACK SCENARIOS (audio / video) */
 .media-player-wrap {
   display: flex;
   flex-direction: column;
@@ -470,9 +465,7 @@ body::after {
   cursor: auto;
 }
 
-/* ══════════════════════════════════════════════════════════
-   ATTACHED TWEET IMAGE
-══════════════════════════════════════════════════════════ */
+/* ATTACHED TWEET IMAGE */
 .tweet-image-wrap {
   margin-top: 12px;
   border-radius: 8px;
@@ -488,9 +481,7 @@ body::after {
   object-fit: cover;
 }
 
-/* ══════════════════════════════════════════════════════════
-   SCORING SECTION SUB-LABELS (intro screen)
-══════════════════════════════════════════════════════════ */
+/* SCORING SECTION SUB-LABELS */
 .score-section-label {
   margin: 12px 0 4px;
   font-size: 12px;

@@ -1,24 +1,18 @@
-/* ============================================================
-   Deepfake Detector — Game logic
-   ============================================================ */
+/* Deepfake Detector — Game logic */
 
-/* ═══════════════════════════════════════════════════════════════
-   SCENARIO DATA
-═══════════════════════════════════════════════════════════════ */
+/* SCENARIO DATA */
 const SCENARIOS = [
 
-  // ── 1. AI VOICE CLONE — CEO phone call (audio playback) ─────────
-  // Relates directly to pre-test Q11
+  // ── 1. AI VOICE CLONE — CEO phone call (audio playback) 
+
   {
     id: 1,
     platform: 'phone',
-    platformLabel: 'Phone Call Recording',
+    platformLabel: 'Voicemail recording',
     platformMeta: 'Received · Today 14:32',
-    avatar: '👔', avatarBg: '#1565c0',
-    senderName: 'James Whitfield (CEO)',
+    avatar: '👩', avatarBg: '#F8C8DC',
+    senderName: 'Sarah',
     senderSub: '+44 7700 900847 · Saved contact',
-    mediaIcon: '🎤',
-    mediaTitle: 'Voicemail recording',
     mediaSub: 'Caller ID matches saved contact',
     mediaWarning: '⚠ Caller ID CAN be spoofed',
     verdict: 'fake',
@@ -30,18 +24,15 @@ const SCENARIOS = [
     safeInfo: null,
   },
 
-  // ── 2. DEEPFAKE VIDEO — Colleague requests credentials (video playback) ─
-  // Relates directly to pre-test Q12
+  // ── 2. DEEPFAKE VIDEO — Colleague requests credentials (video playback) 
   {
     id: 2,
     platform: 'whatsapp',
-    platformLabel: 'WhatsApp · Video Message',
-    platformMeta: 'Today · 11:24',
-    avatar: '👩', avatarBg: '#005252',
-    senderName: 'Sarah Jenkins',
+    platformLabel: 'Video message',
+    platformMeta: 'Today · 11:27',
+    avatar: '👨', avatarBg: '#005252',
+    senderName: 'James',
     senderSub: '+44 7891 234567 · Marketing Team',
-    mediaIcon: '🎬',
-    mediaTitle: 'Video message',
     mediaSub: 'Received over WhatsApp',
     mediaWarning: '⚠ Watch closely — could this be a deepfake?',
     verdict: 'fake',
@@ -62,8 +53,6 @@ const SCENARIOS = [
     avatar: '👨', avatarBg: '#4527a0',
     senderName: 'David Chen · Project Manager',
     senderSub: 'david.chen@acmecorp.co.uk · Verified colleague',
-    mediaIcon: '🎥',
-    mediaTitle: 'Meeting invite · Q3 Project Review',
     mediaSub: 'Calendar link auto-populated · acmecorp.co.uk domain',
     mediaWarning: null,
     verdict: 'safe',
@@ -89,19 +78,17 @@ const SCENARIOS = [
     avatar: '👤', avatarBg: '#01579b',
     senderName: 'Elon Musk · ✓ Verified',
     senderSub: 'Sponsored · Ad · 847K shares',
-    mediaIcon: '🎬',
-    mediaTitle: 'Video · 2:14 · AI-generated face detected',
     mediaSub: 'Subtle jawline blurring visible at 0:34 and 1:12',
     mediaWarning: '⚠ Verified ticks can be purchased or spoofed',
     verdict: 'fake',
     suspiciousCount: 4,
     segments: [
-      { id:'e1',  text:'"I\'ve always believed in giving back to the people who made Tesla possible.', sus: false },
-      { id:'e2',  text: ' That\'s why I\'m launching TeslaCoins —',                sus: true,  reason: 'No such product exists. Fabricated brand names are used to create false legitimacy for crypto scams.' },
-      { id:'e3',  text: ' if you send any amount of Bitcoin to the address below,', sus: true,  reason: 'Legitimate investments never ask you to send cryptocurrency first. Once transferred, crypto is irreversible and immediately controlled by the scammer.' },
+      { id:'e1',  text:'I\'ve always believed in giving back to the people who made Tesla possible.', sus: false },
+      { id:'e2',  text: ' That\'s why I\'m launching TeslaCoins. ',                sus: true,  reason: 'No such product exists. Fabricated brand names are used to create false legitimacy for crypto scams.' },
+      { id:'e3',  text: ' If you send any amount of Bitcoin to the address below,', sus: true,  reason: 'Legitimate investments never ask you to send cryptocurrency first. Once transferred, crypto is irreversible and immediately controlled by the scammer.' },
       { id:'e4',  text: ' I will personally double it and return it within 24 hours.', sus: true, reason: '"Doubling money" is the defining formula of crypto giveaway fraud. No one — including Elon Musk — doubles your money via social media.' },
       { id:'e5',  text: ' This is my personal guarantee.',                          sus: false },
-      { id:'e6',  text: ' Offer closes at midnight tonight — limited spots only."', sus: true,  reason: 'Artificial deadline and scarcity. Pressure tactics prevent you from researching the offer or consulting others before acting.' },
+      { id:'e6',  text: ' Offer closes at midnight tonight, limited spots only!', sus: true,  reason: 'Artificial deadline and scarcity. Pressure tactics prevent you from researching the offer or consulting others before acting.' },
     ],
     cutReward: '⚔️ Celebrity deepfake destroyed! AI deepfakes of Elon Musk have collectively stolen hundreds of millions. Verified ticks can be purchased. The FCA confirms: any investment asking you to "send crypto to receive more" is fraud. Report to Action Fraud: 0300 123 2040.',
     safeInfo: null,
@@ -116,19 +103,17 @@ const SCENARIOS = [
     avatar: '📺', avatarBg: '#6a1b9a',
     senderName: '@martinlewis_money · Promoted',
     senderSub: 'Sponsored advertisement · 2.3M views',
-    mediaIcon: '📱',
-    mediaTitle: 'Reel · 0:58 · Promoted to UK users',
     mediaSub: 'Facial inconsistencies detected at 0:11 and 0:44',
     mediaWarning: '⚠ Martin Lewis has publicly warned about fakes using his image',
     verdict: 'fake',
     suspiciousCount: 3,
     segments: [
-      { id:'m1',  text:'"After 20 years in finance journalism,',                   sus: false },
+      { id:'m1',  text:'After 20 years in finance journalism,',                   sus: false },
       { id:'m2',  text: ' I\'ve finally found the ONE platform that\'s changed everything.', sus: false },
       { id:'m3',  text: ' ProfitAI has returned 340% in just 6 months.',           sus: true,  reason: 'The FCA states that any investment guaranteeing specific high returns is a scam. Legitimate FCA-regulated investments never promise fixed percentage returns.' },
       { id:'m4',  text: ' I\'m legally required to share this before it closes.',  sus: true,  reason: 'No such legal obligation exists. This fabricated phrase is designed to make the scammer sound reluctant and trustworthy, and to create false urgency.' },
       { id:'m5',  text: ' This opportunity closes tonight at midnight.',            sus: true,  reason: 'Artificial deadline. Countdown pressure is a core manipulation tactic to prevent you from researching the offer or consulting a financial advisor.' },
-      { id:'m6',  text: ' Tap the link above to secure your position."',           sus: false },
+      { id:'m6',  text: ' Tap the link above to secure your position.',           sus: false },
     ],
     cutReward: '⚔️ Investment deepfake destroyed! Martin Lewis has issued multiple public warnings about AI ads misusing his likeness. Real investment opportunities have no countdown timers. If you see investment ads claiming celebrity endorsement, report them to the FCA at fca.org.uk/scamsmart.',
     safeInfo: null,
@@ -143,8 +128,6 @@ const SCENARIOS = [
     avatar: '📡', avatarBg: '#263238',
     senderName: '@BreakingUKNews247',
     senderSub: 'Account created 3 weeks ago · 412 followers',
-    mediaIcon: '📷',
-    mediaTitle: 'AI-generated image attached',
     mediaSub: 'Reverse image search: no results. Shadow angles inconsistent.',
     mediaWarning: '⚠ Image metadata shows AI generation tool signature',
     hasImage: true,
@@ -156,13 +139,13 @@ const SCENARIOS = [
       { id:'d1',  text:'🚨 BREAKING: Severe flooding hits Central London.',         sus: false },
       { id:'d2',  text: ' Thousands displaced.',                                    sus: false },
       { id:'d3',  text: ' The Government has COMPLETELY FAILED to respond.',        sus: false },
-      { id:'d4',  text: ' Help victims NOW — every pound counts.',                  sus: false },
-      { id:'d5',  text: ' Donate directly: send ETH to 0x7f4A3c9B...',            sus: true,  reason: 'Verified charities never solicit donations via a cryptocurrency wallet address. This is irreversible and untraceable by design.' },
-      { id:'d6',  text: '\n\n[Account created 3 weeks ago,',                       sus: true,  reason: 'A brand new account breaking major national news with no prior history is a key red flag. Legitimate news outlets have years of posting history.' },
-      { id:'d7',  text: ' 412 followers]',                                          sus: false },
-      { id:'d8',  text: '\n\nPlease share — this needs to go viral before midnight.', sus: true, reason: 'Urgency to share before fact-checkers can respond is a deliberate tactic used in viral misinformation and disaster scam campaigns.' },
+      { id:'d4',  text: ' Help victims NOW! Every pound counts!',                  sus: false },
+      { id:'d5',  text: ' Donate directly: send ETH to 0x7f4A3c9B',            sus: true,  reason: 'Verified charities never solicit donations via a cryptocurrency wallet address. This is irreversible and untraceable by design.' },
+      { id:'d6',  text: ' \n\nPlease share — this needs to go viral before midnight.', sus: true, reason: 'Urgency to share before fact-checkers can respond is a deliberate tactic used in viral misinformation and disaster scam campaigns.' },
+      { id:'d7',  text: '\n\n[Account created 3 weeks ago,',                       sus: true,  reason: 'A brand new account breaking major national news with no prior history is a key red flag. Legitimate news outlets have years of posting history.' },
+      { id:'d8',  text: ' 412 followers]',                                          sus: false },
     ],
-    cutReward: '⚔️ AI disaster scam destroyed! Image generators produce photorealistic scenes in seconds. Always verify through established outlets (BBC, Sky News) before sharing or donating. Only donate through registered charities (Red Cross, DEC) at their official websites — never to a crypto address in a tweet.',
+    cutReward: 'AI disaster scam destroyed! Image generators produce photorealistic scenes in seconds. Always verify through established outlets (BBC, Sky News) before sharing or donating. Only donate through registered charities (Red Cross, DEC) at their official websites — never to a crypto address in a tweet.',
     safeInfo: null,
   },
 
@@ -171,12 +154,10 @@ const SCENARIOS = [
     id: 7,
     platform: 'bbc',
     platformLabel: 'BBC News · bbc.co.uk/news',
-    platformMeta: 'Published: 18 Nov 2024',
+    platformMeta: '18 Nov 2024',
     avatar: '📰', avatarBg: '#bb1919',
     senderName: 'BBC News',
     senderSub: 'Reporter: Bea Swallow · BBC News, Somerset',
-    mediaIcon: '📷',
-    mediaTitle: 'Photo: Zoe Wilkes (Taunton resident in Valencia)',
     mediaSub: 'Photo source named in caption · Published on bbc.co.uk',
     mediaWarning: null,
     hasImage: true,
@@ -190,11 +171,10 @@ const SCENARIOS = [
       { id:'b3',  text: ' to help rebuild after October\'s devastating flash floods.\n\n',                     sus: false },
       { id:'b4',  text:'Zoe Wilkes, originally from Taunton in Somerset,',                                     sus: false },
       { id:'b5',  text: ' said meteorologists reported a year\'s worth of rain fell in eight hours in parts of the region.\n\n', sus: false },
-      { id:'b6',  text:'The Guardia Civil has confirmed 224 people died in what authorities describe as the deadliest flooding in modern Spanish history.\n\n', sus: false },
-      { id:'b7',  text:'Photo credit: Zoe Wilkes.\nCorroborated by: Reuters, Sky News, The Guardian, El País.', sus: false },
+      { id:'b6',  text:'The Guardia Civil has confirmed pver 200 people died in what authorities describe as the deadliest flooding in modern Spanish history.\n\n', sus: false },
     ],
     cutReward: null,
-    safeInfo: '🛡️ Correct — this is a genuine BBC News report. Verification signals all present: named correspondent (Bea Swallow, BBC News Somerset), named photo source (Zoe Wilkes — the interviewee herself, transparently credited even though it is user-supplied imagery), published on the bbc.co.uk domain, authoritative figures cited (Aemet weather agency, Guardia Civil), and the underlying event is independently verified by multiple major outlets. Legitimate journalism names its sources and lets you trace them.',
+    safeInfo: 'This is a genuine BBC News report. Verification signals all present: named correspondent (Bea Swallow, BBC News Somerset), named photo source (Zoe Wilkes — the interviewee herself, transparently credited even though it is user-supplied imagery), published on the bbc.co.uk domain, authoritative figures cited (Aemet weather agency, Guardia Civil), and the underlying event is independently verified by multiple major outlets. Legitimate journalism names its sources and lets you trace them.',
   },
 
 ];
