@@ -609,6 +609,7 @@ function showGameOver() {
     d.innerHTML = `<span>${label}</span><span>${val >= 0 ? '+' : ''}${val}</span>`;
     rows.appendChild(d);
   };
+  
   if (bdBase)     addRow(`✅ Threats correctly identified (${suspiciousFound} × 10)`, bdBase, false);
   if (bdAnalysis) addRow('🔍 Analysis part scores', bdAnalysis, bdAnalysis < 0);
   if (bdBonus)    addRow('⚡ All threats found in time (bonus)', bdBonus, false);
@@ -621,6 +622,17 @@ function showGameOver() {
   rows.appendChild(total);
 
   showScreen('screen-gameover');
+
+  // ADDED: Submit the URL game score to the backend
+  if (window.BotBusters) {
+    BotBusters.submitResult({
+      game: 'url',
+      score: score,
+      total_scenarios: suspiciousTotal
+    }).then(r => console.log('[BotBusters] URL result submitted:', r));
+  } else {
+    console.warn('[BotBusters] tracker not loaded — check script tag in urlgame.html');
+  }
 }
 
 function restartGame() {

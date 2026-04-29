@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Deepfake Detector | Cyber Security Training</title>
+  <title>BotBusters - Deepfake Detector</title>
 
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <link rel="stylesheet" href="{% static 'css/aidetectorgame.css' %}">
@@ -12,59 +12,41 @@
 <body>
 <div id="app">
 
-  <!-- ══════════════════════════════
-       INTRO SCREEN
-  ══════════════════════════════ -->
+  <!-- Instructions -->
   <div id="screen-intro" class="screen visible">
-    <div class="intro-logo">🕵 DEEPFAKE DETECTOR</div>
-    <div class="intro-sub">AI THREAT DETECTION · TRAINING MODULE 02</div>
+    <div class="intro-logo">Deepfake Detective</div>
 
     <div class="intro-grid">
       <div class="intro-card">
-        <h3>📋 HOW TO PLAY</h3>
+        <h3>HOW TO PLAY</h3>
         <ul>
-          <li>A scenario card will appear — a voice call, video, post, or article</li>
-          <li>Read carefully for suspicious content</li>
-          <li><strong style="color:var(--text)">Tap / click</strong> any text that seems like a red flag to highlight it</li>
-          <li>Decide: <strong style="color:#ff9f43">AI Fake</strong> or <strong style="color:var(--green)">Genuine</strong></li>
-          <li>If AI fake — <strong style="color:var(--text)">click anywhere on the card</strong> to slash it!</li>
+          <li>A scenario will appear, such as a phone call, video call, message, sponsored post, advert, or social media post.</li>
+          <li>Read it carefully and highlight any suspicious phrases that may indicate AI-generated content.</li>
+          <li>Decide whether it is fake or safe.</li>
+          <li>If it is fake, tap anywhere on the card to eliminate it.</li>
         </ul>
       </div>
 
       <div class="intro-card">
-        <h3>🎯 SCORING</h3>
+        <h3>SCORING</h3>
+        <p class="score-section-label">📝 Text scenarios</p>
         <table class="score-table">
-          <tr><td>✅ Correct red flag highlighted</td><td>+30 pts</td></tr>
-          <tr><td>⚔️ Cutting an AI fake</td><td>+10 pts</td></tr>
-          <tr><td>🛡️ Correctly identifying genuine content</td><td>+50 pts</td></tr>
-          <tr><td>🌟 All red flags found (bonus)</td><td>+50 pts</td></tr>
-          <tr><td>❌ Wrong highlight (penalty)</td><td>−10 pts</td></tr>
-          <tr><td>💀 Wrong verdict</td><td>+0 pts</td></tr>
+          <tr><td>✅ Correct red flag highlighted</td><td>+30 points</td></tr>
+          <tr><td>⚔️ Correctly identify an AI fake</td><td>+10 points</td></tr>
+          <tr><td>🛡️ Correctly identify genuine content</td><td>+50 points</td></tr>
+          <tr><td>🌟 Flag all suspicious content</td><td>+50 points</td></tr>
+          <tr><td>❌ Wrong flag</td><td>−10 points</td></tr>
+        </table>
+        <p class="score-section-label">🎧 Audio / Video scenarios</p>
+        <table class="score-table">
+          <tr><td>✅ Correct judgement (fake or real)</td><td>+50 points</td></tr>
+          <tr><td>💀 Incorrect judgement</td><td>−50 points</td></tr>
         </table>
       </div>
+      </div> 
 
-      <div class="intro-card">
-        <h3>⚠️ THREAT TYPES</h3>
-        <ul>
-          <li>🎤 <strong style="color:var(--text)">AI Voice Clone</strong> — CEO / family member impersonation</li>
-          <li>🎬 <strong style="color:var(--text)">Deepfake Video</strong> — fake colleague requests</li>
-          <li>⭐ <strong style="color:var(--text)">Fake Celebrity</strong> — investment / crypto scams</li>
-          <li>🌊 <strong style="color:var(--text)">Disaster Photos</strong> — AI-generated crisis images</li>
-        </ul>
-      </div>
-
-      <div class="intro-card">
-        <h3>💡 TIPS</h3>
-        <ul>
-          <li>You can slash without highlighting — but miss out on flag points</li>
-          <li>Find ALL red flags to earn the +50 bonus</li>
-          <li>Wrong highlights lose points — be precise!</li>
-          <li>Not everything is a fake — look for legitimacy signals too</li>
-        </ul>
-      </div>
-    </div>
-
-    <button class="btn-start" onclick="startGame()">▶ START DETECTING</button>
+      
+    <button class="btn-start" onclick="startGame()">▶ START GAME</button>
   </div>
 
   <!-- ══════════════════════════════
@@ -145,6 +127,16 @@
 
 </div>
 
+  <script>
+    /* Media file paths — Django renders these from /static/media/ */
+    window.MEDIA_PATHS = {
+      voiceCall: "{% static 'media/voice-call.m4a' %}",
+      videoCall: "{% static 'media/video-call.mp4' %}",
+      tweetImage: "{% static 'media/tweet-flood-image.png' %}",
+      bbcImage: "{% static 'media/bbc-flood-image.png' %}"
+    };
+  </script>
+  <script src="{% static 'js/resultstracker.js' %}" defer></script>
   <script src="{% static 'js/aidetectorgame.js' %}" defer></script>
 </body>
 </html>

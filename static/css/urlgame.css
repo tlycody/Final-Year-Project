@@ -9,14 +9,15 @@
   --bg:        #013938;
   --surface:   #004848;
   --surface2:  #005252;
+  --border:    rgba(0,201,167,0.25);
   --green:     #00c9a7;
   --green-dim: rgba(0,201,167,0.35);
-  --green-glow:rgba(0,201,167,0.5);
+  --green-glow:rgba(0,201,167,0.45);
   --red:       #ff4d6d;
   --amber:     #ffd166;
   --orange:    #ff9f43;
   --text:      #f0f7f4;
-  --text-dim:  rgba(240,247,244,0.45);
+  --text-dim:  rgba(240,247,244,0.5);
   --mono:      Arial, sans-serif;
   --display:   Arial, sans-serif;
 }
@@ -208,30 +209,32 @@ body::after {
 /* ─── INTRO SCREEN ─────────────────────────── */
 #screen-intro {
   background: var(--bg); z-index: 400; overflow-y: auto;
-  padding: 0 16px 32px; justify-content: flex-start;
+  padding: 0 16px 24px; justify-content: flex-start;
 }
 .intro-logo {
-  font-family: var(--display); font-size: clamp(26px,5vw,44px); font-weight: 700;
+  font-family: var(--display); font-size: clamp(28px, 6vw, 46px); font-weight: 700;
   color: var(--green); letter-spacing: 6px; text-shadow: 0 0 30px var(--green-glow);
   text-align: center; margin: 30px 0 4px;
 }
-.intro-sub { font-size: 10px; color: var(--text-dim); letter-spacing: 4px; text-align: center; margin-bottom: 28px; }
+.intro-sub { font-size: 11px; color: var(--text-dim); letter-spacing: 3px; text-align: center; margin-bottom: 28px; }
 .intro-grid {
   display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-  width: 100%; max-width: 620px; margin: 0 auto 24px;
+  width: 100%; max-width: 580px; margin: 0 auto 20px;
 }
-@media(max-width:500px){ .intro-grid { grid-template-columns: 1fr; } }
+@media(max-width:480px){ .intro-grid { grid-template-columns: 1fr; } }
 .intro-card {
-  background: var(--surface); border: 1px solid rgba(0,201,167,0.2);
-  border-radius: 10px; padding: 16px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px;
 }
-.intro-card h3 { font-family: var(--display); font-size: 12px; color: var(--green); letter-spacing: 2px; margin-bottom: 10px; }
-.intro-card li, .intro-card p { font-size: 11px; color: var(--text-dim); line-height: 1.8; }
+.intro-card h3 { font-family: var(--display); font-size: 13px; color: var(--green); letter-spacing: 2px; margin-bottom: 10px; }
+.intro-card li, .intro-card p { font-size: 11px; color: var(--text-dim); line-height: 1.7; }
 .intro-card ul { padding-left: 16px; }
 .intro-card li { margin-bottom: 4px; }
-.score-tbl { width: 100%; border-collapse: collapse; margin-top: 6px; }
-.score-tbl td { font-size: 11px; padding: 4px 0; color: var(--text-dim); border-bottom: 1px solid rgba(0,201,167,0.06); }
-.score-tbl td:last-child { text-align: right; color: var(--green); font-weight: bold; }
+/* Support both .score-tbl (legacy) and .score-table (new) so existing HTML keeps working */
+.score-tbl, .score-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+.score-tbl td, .score-table td { font-size: 11px; padding: 4px 0; color: var(--text-dim); }
+.score-tbl td:last-child, .score-table td:last-child { text-align: right; color: var(--green); font-weight: bold; }
+.score-tbl tr, .score-table tr { border-bottom: 1px solid rgba(0,201,167,0.08); }
 .btn-start {
   display: block; width: 100%; max-width: 300px;
   margin: 0 auto;
@@ -248,25 +251,27 @@ body::after {
   transition: all 0.2s;
   text-align: center;
 }
-.btn-start:hover { box-shadow: 0 0 30px rgba(0,201,167,0.45); transform: translateY(-1px); }
+.btn-start:hover { box-shadow: 0 0 30px rgba(0,201,167,0.4); transform: translateY(-1px); }
 
 /* ─── GAME OVER ────────────────────────────── */
 #screen-gameover {
-  background: var(--bg); z-index: 400; justify-content: center;
-  text-align: center; gap: 10px; padding: 20px; overflow-y: auto;
+  justify-content: center; text-align: center;
+  gap: 14px; background: var(--bg); z-index: 400;
+  padding: 20px; overflow-y: auto;
 }
-.go-title { font-family: var(--display); font-size: 30px; font-weight: 700; color: var(--green); letter-spacing: 7px; text-shadow: 0 0 30px var(--green-glow); }
-.go-score { font-family: var(--display); font-size: 76px; font-weight: 700; color: #fff; line-height: 1; }
+.go-title { font-family: var(--display); font-size: 36px; font-weight: 700; color: var(--green); letter-spacing: 8px; text-shadow: 0 0 30px var(--green-glow); }
+.go-score { font-family: var(--display); font-size: 80px; font-weight: 700; color: #fff; line-height: 1; }
 .go-label { font-size: 10px; color: var(--text-dim); letter-spacing: 4px; }
+.go-sub   { font-size: 13px; color: rgba(255,255,255,0.55); max-width: 400px; line-height: 1.7; }
 .go-grade { font-family: var(--display); font-size: 22px; letter-spacing: 2px; color: var(--green); }
 .go-breakdown {
-  background: var(--surface); border: 1px solid rgba(0,201,167,0.2);
-  border-radius: 10px; padding: 16px; width: 100%; max-width: 360px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px; width: 100%; max-width: 360px;
   margin: 0 auto; text-align: left;
 }
 .go-bd-title { font-size: 10px; color: var(--text-dim); letter-spacing: 3px; margin-bottom: 10px; }
 .go-bd-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-dim); padding: 5px 0; border-bottom: 1px solid rgba(0,201,167,0.07); }
-.go-bd-row:last-child { border-bottom: none; font-weight: bold; color: var(--text); margin-top: 4px; padding-top: 8px; border-top: 1px solid rgba(0,201,167,0.15); }
+.go-bd-row:last-child { border-bottom: none; font-weight: bold; color: var(--text); margin-top: 4px; padding-top: 8px; border-top: 1px solid var(--border); }
 .go-bd-row span:last-child { color: var(--green); }
 .go-bd-row.penalty span:last-child { color: var(--red); }
 

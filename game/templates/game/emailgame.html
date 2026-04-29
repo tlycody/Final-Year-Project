@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Phishing Ninja | Email Threat Detective</title>
+  <title>BotBusters - Phishing Ninja</title>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <link rel="stylesheet" href="{% static 'css/emailgame.css' %}">
@@ -12,60 +12,35 @@
 <body>
 <div id="app">
 
-  <!-- ══════════════════════════════
-       INSTRUCTIONS SCREEN
-  ══════════════════════════════ -->
+  <!-- Instructions -->
   <div id="screen-intro" class="screen visible">
-    <div class="intro-logo">⚔ PHISHING NINJA</div>
-    <div class="intro-sub">EMAIL THREAT DETECTIVE · TRAINING MODULE 01</div>
+    <div class="intro-logo">Phishing Ninja</div>
 
     <div class="intro-grid">
       <div class="intro-card">
-        <h3>📋 HOW TO PLAY</h3>
+        <h3>HOW TO PLAY</h3>
         <ul>
-          <li>An email will slide up onto the screen</li>
-          <li>Read it carefully for suspicious content</li>
-          <li><strong style="color:var(--text)">Tap / click</strong> any text you think is a red flag to highlight it</li>
-          <li>When you're ready, decide: <strong style="color:#ff9f43">Phishing</strong> or <strong style="color:var(--green)">Safe</strong></li>
-          <li>If phishing — <strong style="color:var(--text)">click anywhere on the email</strong> to slash it!</li>
+<li>An email will slide up from the bottom of the screen</li>
+<li>Read it carefully and click any parts that seem suspicious</li>
+<li>Decide whether the email is phishing or safe</li>
         </ul>
       </div>
 
       <div class="intro-card">
-        <h3>🎯 SCORING</h3>
+        <h3>SCORING</h3>
         <table class="score-table">
-          <tr><td>✅ Correct highlight (each)</td><td>+30 pts</td></tr>
-          <tr><td>⚔️ Cutting a phishing email</td><td>+10 pts</td></tr>
-          <tr><td>🛡️ Correctly passing a safe email</td><td>+50 pts</td></tr>
-          <tr><td>🌟 All red flags found (bonus)</td><td>+50 pts</td></tr>
-          <tr><td>❌ Wrong highlight (penalty)</td><td>−10 pts</td></tr>
-          <tr><td>💀 Wrong verdict</td><td>+0 pts</td></tr>
+          <tr><td>✅ Correct highlight</td><td>+30 points</td></tr>
+          <tr><td>⚔️ Correctly identify a phishing email</td><td>+10 points</td></tr>
+          <tr><td>🛡️ Correctly identify a safe email</td><td>+50 points</td></tr>
+          <tr><td>🌟 Flag all suspicious content </td><td>+50 points</td></tr>
+          <tr><td>❌ Wrong flag</td><td>−10 points</td></tr>
+          <tr><td>💀 Incorrect judgement</td><td>+0 points</td></tr>
         </table>
       </div>
+      </div> 
 
-      <div class="intro-card">
-        <h3>⚠️ RED FLAGS TO LOOK FOR</h3>
-        <ul>
-          <li>Suspicious sender email addresses</li>
-          <li>Urgent / threatening language</li>
-          <li>Fake or misspelled URLs</li>
-          <li>Requests for passwords or PINs</li>
-          <li>Threats about account deletion</li>
-        </ul>
-      </div>
-
-      <div class="intro-card">
-        <h3>💡 TIPS</h3>
-        <ul>
-          <li>You can cut without highlighting — but you'll miss out on highlight points</li>
-          <li>Find ALL red flags to earn the +50 bonus</li>
-          <li>Wrong highlights lose you points — be precise!</li>
-          <li>Safe emails should NOT be cut</li>
-        </ul>
-      </div>
-    </div>
-
-    <button class="btn-start" onclick="startGame()">▶ START TRAINING</button>
+    
+    <button class="btn-start" onclick="startGame()">▶ START GAME</button>
   </div>
 
   <!-- ══════════════════════════════
@@ -152,14 +127,19 @@
     <div class="go-score" id="go-score">0</div>
     <div class="go-label">TOTAL SCORE</div>
     <p class="go-sub">You've completed all threat scenarios.<br>Stay vigilant — phishing attacks are increasingly sophisticated.</p>
+    
     <button class="btn-start" onclick="restartGame()" style="margin-top:8px">↺ PLAY AGAIN</button>
+    <a class="btn-start" href="{% url 'play_game' %}" style="margin-top:8px; text-decoration:none; display:block;">← ALL GAMES</a>
   </div>
+
 
 </div><!-- #app -->
 
 <!-- ══════════════════════════════════════════════════════
      JAVASCRIPT GAME ENGINE
 ══════════════════════════════════════════════════════ -->
+  <script src="{% static 'js/resultstracker.js' %}" defer></script>
   <script src="{% static 'js/emailgame.js' %}" defer></script>
+  
 </body>
 </html>

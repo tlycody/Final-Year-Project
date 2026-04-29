@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>URL Slayer | Cyber Security Training</title>
+  <title>BotBusters - URL Hunter</title>
 
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <link rel="stylesheet" href="{% static 'css/urlgame.css' %}">
@@ -12,37 +12,37 @@
 <body>
 <div id="app">
 
-  <!-- ═══ INTRO SCREEN ═════════════════════════ -->
+  <!-- Instructions -->
   <div id="screen-intro" class="screen visible">
-    <div class="intro-logo">URL THREAT DETECTION</div>
+    <div class="intro-logo">URL Hunter</div>
 
     <div class="intro-grid">
       <div class="intro-card">
         <h3>HOW TO PLAY</h3>
         <ul>
-          <li>URLs float down from the top of the screen</li>
-          <li>A new URL appears every <strong style="color:var(--text)">10 seconds</strong></li>
-          <li><strong style="color:var(--text)">Click</strong> any URL you think is suspicious</li>
-          <li>Identify <em>exactly</em> which part is the red flag</li>
-          <li>Slash and eliminate it before time runs out!</li>
+          <li>URLs float around the screen</li>
+<li>A new URL appears every <strong style="color:var(--text)">10 seconds</strong></li>
+<li><strong style="color:var(--text)">Click</strong> any URL that looks suspicious</li>
+<li>Identify the unsafe part (protocol, domain, TLD, or path)</li>
+<li>Eliminate it before time runs out</li>
         </ul>
       </div>
 
       <div class="intro-card">
-        <h3>SCORING</h3>
-        <ul>
-          <li>Correct suspicious URL clicked — <strong style="color:var(--green)">+10 pts</strong></li>
-          <li>Correct suspicious part flagged — <strong style="color:var(--green)">+10 pts</strong></li>
-          <li>All threats found in time — <strong style="color:var(--green)">+50 pts</strong></li>
-          <li>Clicking a safe URL — <strong style="color:var(--red)">−30 pts</strong></li>
-          <li>Wrong part flagged in analysis — <strong style="color:var(--red)">−5 pts</strong></li>
-          <li>Missed suspicious part in analysis — <strong style="color:var(--amber)">−5 pts</strong></li>
-          <li>Missed suspicious URL at timer end — <strong style="color:var(--red)">−20 pts</strong></li>
-        </ul>
-      </div>
+<h3>SCORING</h3>
+<table class="score-table">
+  <tr><td>✅ Correct suspicious URL clicked</td><td>+10 points</td></tr>
+  <tr><td>⚔️ Correct suspicious part flagged</td><td>+10 points</td></tr>
+  <tr><td>🌟 All threats found before time runs out</td><td>+50 points</td></tr>
+  <tr><td>❌ Clicking a safe URL</td><td>−30 points</td></tr>
+  <tr><td>❌ Incorrect part flagged</td><td>−5 points</td></tr>
+  <tr><td>⚠️ Missed suspicious part</td><td>−5 points</td></tr>
+  <tr><td>💀 Missed suspicious URL at end</td><td>−20 points</td></tr>
+</table>
     </div>
+    </div> 
 
-    <button class="btn-start" onclick="startGame()">START PLAYING</button>
+    <button class="btn-start" onclick="startGame()">▶ START GAME</button>
   </div>
 
   <!-- ═══ GAME SCREEN ═══════════════════════════ -->
@@ -71,7 +71,7 @@
   </div>
 
   <!-- ═══ GAME OVER SCREEN ══════════════════════ -->
-  <div id="screen-gameover" class="screen hidden">
+<div id="screen-gameover" class="screen hidden">
     <div class="go-title">MISSION COMPLETE</div>
     <div class="go-score" id="go-score">0</div>
     <div class="go-label">TOTAL SCORE</div>
@@ -80,7 +80,9 @@
       <div class="go-bd-title">SCORE BREAKDOWN</div>
       <div id="go-bd-rows"></div>
     </div>
+    
     <button class="btn-start" onclick="restartGame()" style="margin-top:6px">PLAY AGAIN</button>
+    <a class="btn-start" href="{% url 'play_game' %}" style="margin-top:8px; text-decoration:none; display:block;">← ALL GAMES</a>
   </div>
 
   <!-- ═══ ANALYSIS MODAL ════════════════════════ -->
@@ -104,6 +106,7 @@
   </div>
 
 </div>
+  <script src="{% static 'js/resultstracker.js' %}" defer></script>
   <script src="{% static 'js/urlgame.js' %}" defer></script>
 </body>
 </html>

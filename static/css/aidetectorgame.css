@@ -431,3 +431,72 @@ body::after {
 @keyframes splitBottom { from{transform:translateY(0) rotate(0deg);opacity:1}   to{transform:translateY(60px) rotate(3deg);opacity:0} }
 @keyframes particleFly { 0%{transform:translate(0,0) scale(1);opacity:1} 100%{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0} }
 @keyframes flashIn     { 0%{opacity:0.7} 100%{opacity:0} }
+/* ══════════════════════════════════════════════════════════
+   MEDIA PLAYBACK SCENARIOS (audio / video)
+══════════════════════════════════════════════════════════ */
+.media-player-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  padding: 4px 0 8px;
+}
+.media-prompt {
+  font-family: -apple-system, 'Segoe UI', Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1f2933;
+  background: #f1f8f5;
+  border-left: 3px solid #00c9a7;
+  padding: 10px 12px;
+  border-radius: 4px;
+  line-height: 1.45;
+}
+.media-audio {
+  width: 100%;
+  outline: none;
+}
+.media-video {
+  width: 100%;
+  max-height: 360px;
+  background: #000;
+  border-radius: 6px;
+  outline: none;
+  display: block;
+}
+/* Stop the slash-mode cursor on the player itself */
+.slash-mode .media-audio,
+.slash-mode .media-video {
+  cursor: auto;
+}
+
+/* ══════════════════════════════════════════════════════════
+   ATTACHED TWEET IMAGE
+══════════════════════════════════════════════════════════ */
+.tweet-image-wrap {
+  margin-top: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e8eaed;
+  background: #f5f7f9;
+  user-select: none;
+}
+.tweet-image {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SCORING SECTION SUB-LABELS (intro screen)
+══════════════════════════════════════════════════════════ */
+.score-section-label {
+  margin: 12px 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #00c9a7;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+.score-section-label:first-of-type { margin-top: 4px; }

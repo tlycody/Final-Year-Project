@@ -14,6 +14,7 @@ from django.contrib import messages
 from django.db.models import Avg, Count, Sum, Q, Max
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
 from .models import (
@@ -38,15 +39,15 @@ def gdpr(request):
 def play_game(request):
     return render(request, 'game/gamepage.html')
 
-
+@ensure_csrf_cookie
 def game1(request):
     return render(request, 'game/emailgame.html')
 
-
+@ensure_csrf_cookie
 def game2(request):
     return render(request, 'game/aidetectorgame.html')
 
-
+@ensure_csrf_cookie
 def game3(request):
     return render(request, 'game/urlgame.html')
 
@@ -139,6 +140,9 @@ def profile_view(request):
         .order_by('-earned_at')
     )
 
+    # ADD THIS LINE: Extract a simple list of the badge IDs the user has earned
+    earned_badge_ids = list(earned_badges.values_list('badge_id', flat=True))
+
     return render(request, 'game/profile.html', {
         'profile_user':   user,
         'sessions':       sessions[:20],
@@ -149,6 +153,8 @@ def profile_view(request):
         'best_ai':        best_ai,
         'earned_badges':  earned_badges,
         'all_badges':     Badge.objects.all().order_by('tier', 'name'),
+        # ADD THIS LINE: Pass the ID list to the template
+        'earned_badge_ids': earned_badge_ids,
     })
 
 

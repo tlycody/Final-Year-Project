@@ -7,38 +7,30 @@
 ═══════════════════════════════════════════════════════════════ */
 const SCENARIOS = [
 
-  // ── 1. AI VOICE CLONE — CEO phone call ──────────────────────────
+  // ── 1. AI VOICE CLONE — CEO phone call (audio playback) ─────────
   // Relates directly to pre-test Q11
   {
     id: 1,
     platform: 'phone',
-    platformLabel: 'Phone Call Transcript',
+    platformLabel: 'Phone Call Recording',
     platformMeta: 'Received · Today 14:32',
     avatar: '👔', avatarBg: '#1565c0',
     senderName: 'James Whitfield (CEO)',
     senderSub: '+44 7700 900847 · Saved contact',
     mediaIcon: '🎤',
-    mediaTitle: 'AI-reconstructed transcript · 0:54',
-    mediaSub: 'Voice quality: normal · Caller ID matches saved contact',
+    mediaTitle: 'Voicemail recording',
+    mediaSub: 'Caller ID matches saved contact',
     mediaWarning: '⚠ Caller ID CAN be spoofed',
     verdict: 'fake',
-    suspiciousCount: 4,
-    segments: [
-      { id:'s1',  text:'"Hi, it\'s James.',                                         sus: false },
-      { id:'s2',  text: ' Listen, I\'m stuck in an emergency board meeting and ',   sus: false },
-      { id:'s3',  text: 'I can\'t access my laptop or company systems.',            sus: true,  reason: 'Conveniently removes all normal verification channels — you cannot email, Slack, or check the company portal to confirm the request.' },
-      { id:'s4',  text: ' We need to urgently approve a supplier payment — ',       sus: false },
-      { id:'s5',  text: 'can you transfer £10,000 to their account right now?',     sus: true,  reason: 'Unusually large transfer requested verbally over a phone call. Company policy requires dual director approval for any payment over £5,000.' },
-      { id:'s6',  text: ' I\'ll text you the account details immediately.',         sus: false },
-      { id:'s7',  text: ' This is completely confidential —',                       sus: true,  reason: 'Confidentiality demand prevents you from seeking a second opinion or following normal approval procedures — a key social engineering tactic.' },
-      { id:'s8',  text: ' don\'t mention it to anyone else on the team.',           sus: true,  reason: 'Isolation tactic. Legitimate executives never instruct staff to bypass colleagues or internal approval chains for financial transactions.' },
-      { id:'s9',  text: ' Time is critical. Just confirm once it\'s done."',        sus: false },
-    ],
-    cutReward: '⚔️ AI voice clone neutralised! Voice cloning technology can replicate anyone from just 3 seconds of audio found on social media or YouTube. Always verify payment requests through a separate, known channel — call the CEO\'s direct line from your contacts, not the number that just called you.',
+    suspiciousCount: 0,
+    mediaType: 'audio',
+    mediaPrompt: '🎧 Listen to the recording carefully — does this sound genuine, or could it be an AI-cloned voice?',
+    segments: [],
+    cutReward: '⚔️ AI voice clone neutralised! Voice cloning technology can replicate anyone from just 3 seconds of audio found on social media or YouTube. Listen for: unnatural pacing, missing breaths, flat emotion, requests for urgent payments, demands for secrecy. Always verify payment requests through a separate, known channel — call the CEO\'s direct line from your contacts, not the number that just called you.',
     safeInfo: null,
   },
 
-  // ── 2. DEEPFAKE VIDEO — Colleague requests credentials ───────────
+  // ── 2. DEEPFAKE VIDEO — Colleague requests credentials (video playback) ─
   // Relates directly to pre-test Q12
   {
     id: 2,
@@ -49,22 +41,15 @@ const SCENARIOS = [
     senderName: 'Sarah Jenkins',
     senderSub: '+44 7891 234567 · Marketing Team',
     mediaIcon: '🎬',
-    mediaTitle: 'Video message · 0:42',
-    mediaSub: 'Received over WhatsApp · Shows Sarah at home desk',
-    mediaWarning: '⚠ Lip-sync delay ~0.2s detected',
+    mediaTitle: 'Video message',
+    mediaSub: 'Received over WhatsApp',
+    mediaWarning: '⚠ Watch closely — could this be a deepfake?',
     verdict: 'fake',
-    suspiciousCount: 3,
-    segments: [
-      { id:'v1',  text:'"Hi! Thanks for watching this.',                           sus: false },
-      { id:'v2',  text: ' I\'m working from home and my VPN stopped working.',     sus: false },
-      { id:'v3',  text: ' Could you send me your login credentials',               sus: true,  reason: 'Credentials must NEVER be shared — not even with colleagues. This violates company security policy and creates personal liability for any misuse.' },
-      { id:'v4',  text: ' so I can grab the files for the Morrison project?',      sus: false },
-      { id:'v5',  text: ' Just reply with your username and password.',            sus: true,  reason: 'Any request for your password is an absolute red flag. Legitimate IT solutions involve the helpdesk resetting access — never borrowing another employee\'s credentials.' },
-      { id:'v6',  text: ' I only need it for an hour or two,',                    sus: true,  reason: 'Downplaying the duration to reduce your concern. Credential access is not time-limited — anyone with your password has full, permanent access to your account.' },
-      { id:'v7',  text: ' then you can change it.',                               sus: false },
-      { id:'v8',  text: ' The client presentation is in 3 hours and I\'m panicking! Please help!"', sus: false },
-    ],
-    cutReward: '⚔️ Deepfake video threat destroyed! AI tools can clone a colleague\'s face and voice using LinkedIn photos and Zoom recordings. Never share credentials — even briefly. Contact Sarah directly on Teams or call her mobile to verify, using contact details you already have saved.',
+    suspiciousCount: 0,
+    mediaType: 'video',
+    mediaPrompt: '🎬 Watch the video carefully — does this look genuine, or could it be a deepfake?',
+    segments: [],
+    cutReward: '⚔️ Deepfake video threat destroyed! AI tools can clone a colleague\'s face and voice using LinkedIn photos and Zoom recordings. Watch for: lip-sync delays, unnatural blinking, inconsistent lighting on the face, requests to share credentials. Never share passwords — even briefly. Contact Sarah directly on Teams or call her mobile to verify, using contact details you already have saved.',
     safeInfo: null,
   },
 
@@ -162,6 +147,9 @@ const SCENARIOS = [
     mediaTitle: 'AI-generated image attached',
     mediaSub: 'Reverse image search: no results. Shadow angles inconsistent.',
     mediaWarning: '⚠ Image metadata shows AI generation tool signature',
+    hasImage: true,
+    imageKey: 'tweetImage',
+    imageAlt: 'Tweeted flood photo (AI-generated)',
     verdict: 'fake',
     suspiciousCount: 3,
     segments: [
@@ -183,27 +171,30 @@ const SCENARIOS = [
     id: 7,
     platform: 'bbc',
     platformLabel: 'BBC News · bbc.co.uk/news',
-    platformMeta: 'Published: 2 Nov 2024',
+    platformMeta: 'Published: 18 Nov 2024',
     avatar: '📰', avatarBg: '#bb1919',
     senderName: 'BBC News',
-    senderSub: 'Reporter: Tom Bateman · Europe Correspondent',
+    senderSub: 'Reporter: Bea Swallow · BBC News, Somerset',
     mediaIcon: '📷',
-    mediaTitle: 'Photo: Jorge Guerrero / AFP via Getty Images',
-    mediaSub: 'Verified wire service image · Published on BBC.co.uk domain',
+    mediaTitle: 'Photo: Zoe Wilkes (Taunton resident in Valencia)',
+    mediaSub: 'Photo source named in caption · Published on bbc.co.uk',
     mediaWarning: null,
+    hasImage: true,
+    imageKey: 'bbcImage',
+    imageAlt: 'Cars piled by Valencia flash floods — Photo: Zoe Wilkes',
     verdict: 'safe',
     suspiciousCount: 0,
     segments: [
-      { id:'b1',  text:'Rescue teams continue searching for survivors',             sus: false },
-      { id:'b2',  text: ' after flash floods devastated the Valencia region of Spain,', sus: false },
-      { id:'b3',  text: ' killing over 200 people.',                               sus: false },
-      { id:'b4',  text: ' The Spanish government has deployed 10,000 military personnel to assist recovery efforts.\n\n', sus: false },
-      { id:'b5',  text:'The UK\'s Disasters Emergency Committee (DEC) has launched a humanitarian appeal.',              sus: false },
-      { id:'b6',  text: ' To donate, visit the British Red Cross at redcross.org.uk/donate.',                            sus: false },
-      { id:'b7',  text: '\n\nPhoto credit: Jorge Guerrero / AFP via Getty Images.\nCorroborated by: Reuters, Sky News, The Guardian, El País.', sus: false },
+      { id:'b1',  text:'A British woman living in Valencia',                                                  sus: false },
+      { id:'b2',  text: ' has organised a team of around 60 volunteers',                                       sus: false },
+      { id:'b3',  text: ' to help rebuild after October\'s devastating flash floods.\n\n',                     sus: false },
+      { id:'b4',  text:'Zoe Wilkes, originally from Taunton in Somerset,',                                     sus: false },
+      { id:'b5',  text: ' said meteorologists reported a year\'s worth of rain fell in eight hours in parts of the region.\n\n', sus: false },
+      { id:'b6',  text:'The Guardia Civil has confirmed 224 people died in what authorities describe as the deadliest flooding in modern Spanish history.\n\n', sus: false },
+      { id:'b7',  text:'Photo credit: Zoe Wilkes.\nCorroborated by: Reuters, Sky News, The Guardian, El País.', sus: false },
     ],
     cutReward: null,
-    safeInfo: '🛡️ Correct — this is a genuine BBC News report. All verification signals present: named correspondent, named AFP wire photographer, published on bbc.co.uk, event independently verified by multiple major outlets, donation via registered charity website (not crypto). This is exactly what legitimate journalism looks like.',
+    safeInfo: '🛡️ Correct — this is a genuine BBC News report. Verification signals all present: named correspondent (Bea Swallow, BBC News Somerset), named photo source (Zoe Wilkes — the interviewee herself, transparently credited even though it is user-supplied imagery), published on the bbc.co.uk domain, authoritative figures cited (Aemet weather agency, Guardia Civil), and the underlying event is independently verified by multiple major outlets. Legitimate journalism names its sources and lets you trace them.',
   },
 
 ];
@@ -272,17 +263,67 @@ function loadScenario(index) {
     + '<div><div class="s-name">' + esc(sc.senderName) + '</div>'
     + '<div class="s-sub">' + esc(sc.senderSub) + '</div></div>';
 
-  // Card body with segments
+  // Card body: media player OR clickable text segments
   const body = document.getElementById('card-body');
   body.innerHTML = '';
-  sc.segments.forEach(function(seg) {
-    const span = document.createElement('span');
-    span.className = 'seg clickable';
-    span.id = 'seg-' + seg.id;
-    span.textContent = seg.text;
-    span.onclick = function() { toggleHighlight(seg, span); };
-    body.appendChild(span);
-  });
+
+  if (sc.mediaType === 'audio' || sc.mediaType === 'video') {
+    // ── Media playback scenario — no highlighting ──
+    const wrap = document.createElement('div');
+    wrap.className = 'media-player-wrap';
+
+    const prompt = document.createElement('div');
+    prompt.className = 'media-prompt';
+    prompt.textContent = sc.mediaPrompt || '';
+    wrap.appendChild(prompt);
+
+    const paths = window.MEDIA_PATHS || {};
+    let player;
+
+    if (sc.mediaType === 'audio') {
+      player = document.createElement('audio');
+      player.src = paths.voiceCall || '';
+      player.controls = true;
+      player.preload = 'metadata';
+      player.className = 'media-audio';
+    } else {
+      player = document.createElement('video');
+      player.src = paths.videoCall || '';
+      player.controls = true;
+      player.preload = 'metadata';
+      player.playsInline = true;
+      player.className = 'media-video';
+    }
+    // Stop clicks on player from triggering the slash
+    player.onclick = function(e) { e.stopPropagation(); };
+    wrap.appendChild(player);
+
+    body.appendChild(wrap);
+  } else {
+    // ── Standard scenario — clickable text segments ──
+    sc.segments.forEach(function(seg) {
+      const span = document.createElement('span');
+      span.className = 'seg clickable';
+      span.id = 'seg-' + seg.id;
+      span.textContent = seg.text;
+      span.onclick = function() { toggleHighlight(seg, span); };
+      body.appendChild(span);
+    });
+
+    // Optional attached image (e.g. tweet photo, news photo)
+    if (sc.hasImage) {
+      const paths = window.MEDIA_PATHS || {};
+      const imgWrap = document.createElement('div');
+      imgWrap.className = 'tweet-image-wrap';
+      const img = document.createElement('img');
+      img.className = 'tweet-image';
+      img.src = paths[sc.imageKey] || '';
+      img.alt = sc.imageAlt || 'Attached image';
+      img.onclick = function(e) { e.stopPropagation(); };
+      imgWrap.appendChild(img);
+      body.appendChild(imgWrap);
+    }
+  }
 
   // Slash canvas + flash reset
   document.getElementById('slash-canvas').innerHTML = '';
@@ -356,6 +397,9 @@ function selectVerdict(v) {
   if (!cardReady) return;
   const sc = SCENARIOS[scenarioIndex];
 
+  // Pause any media currently playing in the card
+  const mediaEl = document.querySelector('#scenario-card audio, #scenario-card video');
+
   if (v === 'fake') {
     // Activate slash mode
     const card = document.getElementById('scenario-card');
@@ -367,13 +411,18 @@ function selectVerdict(v) {
     gamePhase = 'slashing';
   } else {
     // Safe verdict
+    if (mediaEl) { try { mediaEl.pause(); } catch (e) {} }
     gamePhase = 'done';
+    const isMediaScenario = !!sc.mediaType;
     if (sc.verdict === 'safe') {
       addScore(50);
       showResult(true, '🛡️', 'GENUINE CONTENT IDENTIFIED!', sc.safeInfo, 50, 0, 0, sc);
     } else {
+      // Wrong — passed a fake as genuine
+      const penalty = isMediaScenario ? -50 : 0;
+      if (penalty !== 0) addScore(penalty);
       showResult(false, '❌', 'WRONG — THIS WAS AI-GENERATED!',
-        'You let an AI fake pass. Check the red flags below to see what to look for next time.', 0, 0, 0, sc);
+        'You let an AI fake pass. Check the red flags below to see what to look for next time.', penalty, 0, 0, sc);
     }
   }
 }
@@ -392,6 +441,10 @@ function doSlash(e) {
   card.onclick = null;
   card.classList.remove('slash-mode');
   document.getElementById('slash-hint').style.display = 'none';
+
+  // Pause any media playing inside the card before slashing
+  const mediaEl = card.querySelector('audio, video');
+  if (mediaEl) { try { mediaEl.pause(); } catch (e) {} }
 
   // Slash line
   const canvas = document.getElementById('slash-canvas');
@@ -412,21 +465,27 @@ function doSlash(e) {
   setTimeout(function() { splitCard(slashY); }, 260);
 
   const sc = SCENARIOS[scenarioIndex];
-  addScore(10);
+  const isMediaScenario = !!sc.mediaType;
+  const correctSlash = (sc.verdict === 'fake');
   const correctHighlights = Object.values(highlighted).filter(function(h) { return h.correct; }).length;
   const allFound = correctHighlights === sc.suspiciousCount;
+
+  let basePoints = 0;
   let bonus = 0;
-  if (allFound && sc.suspiciousCount > 0) {
-    bonus = 50;
-    addScore(50);
+  if (correctSlash) {
+    basePoints = isMediaScenario ? 50 : 10;
+    if (allFound && sc.suspiciousCount > 0) bonus = 50;
+  } else {
+    basePoints = isMediaScenario ? -50 : 0;
   }
+  addScore(basePoints + bonus);
 
   setTimeout(function() {
-    if (sc.verdict === 'fake') {
-      showResult(true, '⚔️', 'AI FAKE DESTROYED!', sc.cutReward, 10, correctHighlights, bonus, sc);
+    if (correctSlash) {
+      showResult(true, '⚔️', 'AI FAKE DESTROYED!', sc.cutReward, basePoints, correctHighlights, bonus, sc);
     } else {
       showResult(false, '❌', 'WRONG — THIS WAS GENUINE!',
-        'This was real content — you slashed a legitimate item. Check the legitimacy signals below.', 0, correctHighlights, 0, sc);
+        'This was real content — you slashed a legitimate item. Check the legitimacy signals below.', basePoints, correctHighlights, 0, sc);
     }
   }, 900);
 }
@@ -493,8 +552,10 @@ function showResult(success, icon, title, msg, basePoints, correctHighlights, bo
   document.getElementById('res-msg').textContent = msg || '';
 
   var roundScore = basePoints + (correctHighlights * 30) + bonus;
-  document.getElementById('res-score-gained').textContent = '+' + roundScore;
-  document.getElementById('res-score-label').textContent  = 'POINTS EARNED THIS ROUND';
+  var gainEl = document.getElementById('res-score-gained');
+  gainEl.textContent = (roundScore >= 0 ? '+' : '') + roundScore;
+  gainEl.style.color = roundScore < 0 ? '#ff6b35' : '';
+  document.getElementById('res-score-label').textContent  = roundScore >= 0 ? 'POINTS EARNED THIS ROUND' : 'POINTS LOST THIS ROUND';
 
   // Breakdown
   var breakdown = document.getElementById('res-breakdown');
@@ -503,8 +564,10 @@ function showResult(success, icon, title, msg, basePoints, correctHighlights, bo
     addRow(breakdown, 'Red flags highlighted (' + correctHighlights + ' × 30)', '+' + (correctHighlights*30) + ' pts');
   }
   if (basePoints > 0) {
-    var lbl = basePoints === 50 ? 'Genuine content — correct verdict' : 'AI fake cut — correct verdict';
+    var lbl = sc.verdict === 'safe' ? 'Genuine content — correct verdict' : 'AI fake cut — correct verdict';
     addRow(breakdown, lbl, '+' + basePoints + ' pts');
+  } else if (basePoints < 0) {
+    addRow(breakdown, 'Incorrect judgement', basePoints + ' pts');
   }
   if (bonus > 0) {
     addRow(breakdown, '🌟 All red flags found! (bonus)', '+50 pts');
@@ -553,9 +616,22 @@ function addRow(parent, label, value) {
 function nextScenario() {
   document.getElementById('result-overlay').classList.remove('show');
   scenarioIndex++;
+  
   if (scenarioIndex >= SCENARIOS.length) {
     document.getElementById('go-score').textContent = totalScore;
     show('screen-gameover');
+
+    // ADDED: Submit the AI game score to the backend
+    if (window.BotBusters) {
+      BotBusters.submitResult({
+        game: 'ai',
+        score: totalScore,
+        total_scenarios: SCENARIOS.length
+      }).then(r => console.log('[BotBusters] AI result submitted:', r));
+    } else {
+      console.warn('[BotBusters] tracker not loaded — check script tag in aidetectorgame.html');
+    }
+
   } else {
     var card = document.getElementById('scenario-card');
     card.style.opacity = '1';

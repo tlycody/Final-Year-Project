@@ -193,8 +193,14 @@ const EMAILS = [
 ];
 
 /* ─── STATE ───────────────────────────────────────────────── */
+
 let emailIndex   = 0;
-let totalScore   = 0;
+let totalScore        = 0;
+let correctVerdictsCount = 0;
+let flagsFoundTotal      = 0;
+let flagsTotalTotal      = 0;
+let questionResults      = [];
+let featureResults       = [];
 let highlighted  = {};   // id → { correct: bool }
 let wrongHighlights = 0;
 let gamePhase    = "reading";  // reading | slashing | done
@@ -209,6 +215,11 @@ function startGame() {
 
 function restartGame() {
   emailIndex = 0; totalScore = 0;
+  correctVerdictsCount = 0;
+  flagsFoundTotal = 0;
+  flagsTotalTotal = 0;
+  questionResults = [];
+  featureResults  = [];
   highlighted = {}; wrongHighlights = 0;
   gamePhase = "reading";
   show("screen-game");
@@ -486,7 +497,33 @@ function spawnParticles(cx, cy) {
 }
 
 /* ─── SHOW RESULT ─────────────────────────────────────────── */
-function showResult(success, icon, title, msg, basePoints, correctHighlights=0, bonus=0, email=null) {
+  function showResult(success, icon, title, msg, basePoints, correctHighlights=0, bonus=0, email=null) {
+  // ─── NEW: record this email's result for backend submission ───
+  const currentEmail   = email || EMAILS[emailIndex];
+  const verdictCorrect = success;
+  const correctHL      = correctHighlights;
+  const roundPoints    = basePoints + (correctHL * 30) + bonus;
+
+  if (verdictCorrect) correctVerdictsCount++;
+  flagsFoundTotal += correctHL;
+  flagsTotalTotal += currentEmail.suspiciousCount;
+
+  questionResults.push({
+    id: String(currentEmail.id),
+    verdict_correct: verdictCorrect,
+    flags_found: correctHL,
+    flags_total: currentEmail.suspiciousCount,
+    points: roundPoints,
+  });
+
+  currentEmail.segments.filter(s => s.sus).forEach(seg => {
+    featureResults.push({
+      scenario:   String(currentEmail.id),
+      segment:    seg.id,
+      text:       seg.text,
+      identified: !!(highlighted[seg.id] && highlighted[seg.id].correct),
+    });
+  });
   const overlay = document.getElementById("result-overlay");
   document.getElementById("res-icon").textContent = icon;
 
@@ -560,9 +597,25 @@ function addRow(parent, label, value) {
 function nextEmail() {
   document.getElementById("result-overlay").classList.remove("show");
   emailIndex++;
+
   if (emailIndex >= EMAILS.length) {
     document.getElementById("go-score").textContent = totalScore;
     show("screen-gameover");
+
+    if (window.BotBusters) {
+      BotBusters.submitResult({
+        game: 'email',
+        score:            totalScore,
+        correct_verdicts: correctVerdictsCount,
+        total_scenarios:  EMAILS.length,
+        flags_found:      flagsFoundTotal,
+        flags_total:      flagsTotalTotal,
+        questions:        questionResults,
+        features:         featureResults,
+      }).then(r => console.log('[BotBusters] submit result:', r));
+    } else {
+      console.warn('[BotBusters] tracker not loaded — check script tag in emailgame.html');
+    }
   } else {
     // Reset card visibility
     const card = document.getElementById("email-card");
