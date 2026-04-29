@@ -18,9 +18,8 @@ const SCENARIOS = [
     verdict: 'fake',
     suspiciousCount: 0,
     mediaType: 'audio',
-    mediaPrompt: '🎧 Listen to the recording carefully — does this sound genuine, or could it be an AI-cloned voice?',
     segments: [],
-    cutReward: '⚔️ AI voice clone neutralised! Voice cloning technology can replicate anyone from just 3 seconds of audio found on social media or YouTube. Listen for: unnatural pacing, missing breaths, flat emotion, requests for urgent payments, demands for secrecy. Always verify payment requests through a separate, known channel — call the CEO\'s direct line from your contacts, not the number that just called you.',
+    cutReward: 'AI voice clone neutralised! Voice cloning technology can replicate anyone from just 3 seconds of audio found on social media or YouTube. Listen for: unnatural pacing, missing breaths, flat emotion, requests for urgent payments, demands for secrecy. Always verify payment requests through a separate, known channel.',
     safeInfo: null,
   },
 
@@ -38,9 +37,8 @@ const SCENARIOS = [
     verdict: 'fake',
     suspiciousCount: 0,
     mediaType: 'video',
-    mediaPrompt: '🎬 Watch the video carefully — does this look genuine, or could it be a deepfake?',
     segments: [],
-    cutReward: '⚔️ Deepfake video threat destroyed! AI tools can clone a colleague\'s face and voice using LinkedIn photos and Zoom recordings. Watch for: lip-sync delays, unnatural blinking, inconsistent lighting on the face, requests to share credentials. Never share passwords — even briefly. Contact Sarah directly on Teams or call her mobile to verify, using contact details you already have saved.',
+    cutReward: 'Deepfake video threat destroyed! AI tools can clone a colleague\'s face and voice using LinkedIn photos and Zoom recordings. Watch for: lip-sync delays, unnatural blinking, inconsistent lighting on the face, requests to share credentials. Never share passwords, even briefly! Contact James directly on Teams or call her mobile to verify, using contact details you already have saved.',
     safeInfo: null,
   },
 
@@ -252,10 +250,12 @@ function loadScenario(index) {
     const wrap = document.createElement('div');
     wrap.className = 'media-player-wrap';
 
-    const prompt = document.createElement('div');
-    prompt.className = 'media-prompt';
-    prompt.textContent = sc.mediaPrompt || '';
-    wrap.appendChild(prompt);
+    if (sc.mediaPrompt) {
+      const prompt = document.createElement('div');
+      prompt.className = 'media-prompt';
+      prompt.textContent = sc.mediaPrompt;
+      wrap.appendChild(prompt);
+    }
 
     const paths = window.MEDIA_PATHS || {};
     let player;
@@ -401,8 +401,14 @@ function selectVerdict(v) {
       // Wrong — passed a fake as genuine
       const penalty = isMediaScenario ? -50 : 0;
       if (penalty !== 0) addScore(penalty);
+      // For media scenarios there are no segment-level red flags shown below,
+      // so use the educational cutReward as the explanation. Text scenarios
+      // keep the generic message (their red flags are listed in the missed section).
+      const wrongMsg = (isMediaScenario && sc.cutReward)
+        ? sc.cutReward
+        : 'You let an AI fake pass. Check the red flags below to see what to look for next time.';
       showResult(false, '❌', 'WRONG — THIS WAS AI-GENERATED!',
-        'You let an AI fake pass. Check the red flags below to see what to look for next time.', penalty, 0, 0, sc);
+        wrongMsg, penalty, 0, 0, sc);
     }
   }
 }
@@ -465,7 +471,7 @@ function doSlash(e) {
       showResult(true, '⚔️', 'AI FAKE DESTROYED!', sc.cutReward, basePoints, correctHighlights, bonus, sc);
     } else {
       showResult(false, '❌', 'WRONG — THIS WAS GENUINE!',
-        'This was real content — you slashed a legitimate item. Check the legitimacy signals below.', basePoints, correctHighlights, 0, sc);
+        'This was real content! You slashed a legitimate item!', basePoints, correctHighlights, 0, sc);
     }
   }, 900);
 }

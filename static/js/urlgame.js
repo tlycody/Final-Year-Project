@@ -205,7 +205,9 @@ function spawnNext() {
 function spawnPill(data) {
   const el = document.createElement('div');
   el.className = 'url-pill';
-  el.innerHTML = `<span class="pill-icon">${data.icon}</span><span class="pill-text">${escHtml(data.display)}</span>`;
+  // Only render the icon span if data.icon is defined — avoids "undefined" appearing in pills
+  const iconHtml = data.icon ? `<span class="pill-icon">${data.icon}</span>` : '';
+  el.innerHTML = `${iconHtml}<span class="pill-text">${escHtml(data.display)}</span>`;
 
   // Temporarily add off-screen to measure width
   el.style.visibility = 'hidden';
@@ -589,14 +591,28 @@ function endGame() {
   setTimeout(() => showGameOver(), 1200);
 }
 
+/* Rank table — used both for the achieved-grade label and the rank-table display */
+const RANK_TABLE = [
+  { name: 'S RANK 🌟', label: 'Master Hunter',  min: 120, max: 310, color: 'var(--green)' },
+  { name: 'A RANK ✅', label: 'Skilled',        min: 90,  max: 119, color: 'var(--green)' },
+  { name: 'B RANK 👍', label: 'Capable',        min: 60,  max: 89,  color: 'var(--amber)' },
+  { name: 'C RANK ⚠️', label: 'Learning',       min: 30,  max: 59,  color: 'var(--amber)' },
+  { name: 'D RANK',    label: 'Keep Practising', min: 0,  max: 29,  color: 'var(--red)' },
+];
+
+function getRankFor(s) {
+  return RANK_TABLE.find(r => s >= r.min && s <= r.max) || RANK_TABLE[RANK_TABLE.length - 1];
+}
+
 function showGameOver() {
-  const pct = Math.round((score / Math.max(1, suspiciousTotal * 10 + suspiciousTotal * 10 + 50)) * 100);
-  const grade = score >= 120 ? 'S RANK 🌟' : score >= 90 ? 'A RANK ✅' : score >= 60 ? 'B RANK 👍' : score >= 30 ? 'C RANK ⚠️' : 'D RANK — Keep Practising';
+  const rank = getRankFor(score);
 
   document.getElementById('go-score').textContent = score;
-  document.getElementById('go-grade').textContent = grade;
-  document.getElementById('go-grade').style.color = score >= 90 ? 'var(--green)' : score >= 60 ? 'var(--amber)' : 'var(--red)';
+  const gradeEl = document.getElementById('go-grade');
+  gradeEl.textContent = rank.name + ' — ' + rank.label;
+  gradeEl.style.color = rank.color;
 
+  // ── Score breakdown ──
   const rows = document.getElementById('go-bd-rows');
   rows.innerHTML = '';
   const addRow = (label, val, penalty) => {
@@ -616,6 +632,20 @@ function showGameOver() {
   total.className = 'go-bd-row';
   total.innerHTML = `<span>TOTAL</span><span>${score} pts</span>`;
   rows.appendChild(total);
+
+  // ── Rank table ──
+  const rankRows = document.getElementById('go-rank-rows');
+  rankRows.innerHTML = '';
+  RANK_TABLE.forEach(r => {
+    const row = document.createElement('div');
+    const isCurrent = (score >= r.min && score <= r.max);
+    row.className = 'go-rank-row' + (isCurrent ? ' current' : '');
+    row.innerHTML = `
+      <span class="rank-name" style="${isCurrent ? '' : 'color:' + r.color + ';'}">${r.name} <span class="rank-sub">${r.label}</span></span>
+      <span class="rank-range">${r.min} – ${r.max}</span>
+    `;
+    rankRows.appendChild(row);
+  });
 
   showScreen('screen-gameover');
 

@@ -62,7 +62,9 @@ GLOSSARY_TERMS = {
         'CEO Fraud': 'A scam where attackers impersonate a senior executive to pressure staff into urgent wire transfers or sharing sensitive information.',
         'Credential Harvesting': 'A scam designed to capture usernames and passwords, usually via a fake login page that looks identical to a real one.',
         'Spoofing': 'Faking the apparent source of a message — e.g. caller ID spoofing, email sender spoofing, or domain spoofing.',
-        'Artificial Urgency': 'A social engineering tactic using fake deadlines or threats (e.g., "Account suspended in 24 hours") to panic the victim into acting without thinking.'
+        'Artificial Urgency': 'A social engineering tactic using fake deadlines or threats (e.g., "Account suspended in 24 hours") to panic the victim into acting without thinking.',
+        'Spam': 'Irrelevant or unsolicited messages sent in bulk. While often just annoying advertising, spam is the primary delivery method for phishing attacks and malware.'
+        
     },
     'Web & URL Navigation': {
         'Domain Name': 'The main address of a website (e.g., amazon.com). Checking this is the most critical step in verifying if a link is safe.',
@@ -71,13 +73,18 @@ GLOSSARY_TERMS = {
         'Protocol (HTTP/HTTPS)': 'The set of rules used to transfer data. HTTPS is encrypted, but attackers can still get certificates for fake sites. You should never enter payment details on an unencrypted HTTP connection.',
         'Typosquatting': 'Registering domain names that look like a real brand but contain a typo (e.g. arnazon.com instead of amazon.com) to trick users.',
         'Homograph Attack': 'Using lookalike characters (e.g. the digit 0 instead of the letter o, or "rn" instead of "m") in a domain name to impersonate a legitimate site.',
-        'URL Shortener': 'A service like bit.ly that hides the real destination of a link behind a short alias. Often abused to obscure phishing or malicious URLs.'
+        'URL Shortener': 'A service like bit.ly that hides the real destination of a link behind a short alias. Often abused to obscure phishing or malicious URLs.',
+        'Cryptocurrency (Bitcoin / Ethereum)': 'A digital currency. Because transactions are virtually untraceable and irreversible once sent, it is the preferred payment method for scammers.',
+        'Dark Web': 'A hidden part of the internet requiring special software to access. It is often used by cybercriminals to anonymously buy and sell stolen data, like passwords.'
     },
     'Malware & Intrusions': {
         'Malware': 'A catch-all term for malicious software (like viruses, worms, or Trojans) designed to damage, disrupt, or gain unauthorized access to a system.',
         'Ransomware': 'A type of malware that locks or encrypts a victim\'s files, demanding a payment (ransom) to restore access.',
         'Botnet': 'A network of hijacked computers and devices infected with malware, controlled remotely by an attacker to send spam, launch attacks, or mine cryptocurrency.',
-        'Data Breach': 'A security incident where unauthorized individuals gain access to sensitive, protected, or confidential data from a company or database.'
+        'Data Breach': 'A security incident where unauthorized individuals gain access to sensitive, protected, or confidential data from a company or database.',
+        'DDoS (Distributed Denial of Service)': 'A cyberattack where criminals flood a website or network with fake internet traffic to overwhelm its servers and force it to crash or go offline.',
+        'Man-in-the-Middle (MitM) Attack': 'An attack where a scammer secretly intercepts communication between two parties (like you and your bank). This often happens on unsecured public Wi-Fi.'
+        
     },
     'AI & Synthetic Media': {
         'Deepfake': 'AI-generated synthetic media (audio, image, or video) that imitates a real person — often used to impersonate executives, family members, or public figures.',

@@ -203,6 +203,14 @@ let gamePhase    = "reading";  // reading | slashing | done
 let floatAnim    = null;
 let emailReady   = false;
 
+/* Breakdown accumulators (reset in restartGame) */
+let bdPhishingCaught   = 0;   // phishing emails correctly slashed
+let bdSafeIdentified   = 0;   // safe emails correctly identified
+let bdWrongVerdicts    = 0;   // wrong verdicts (no points either way)
+let bdFlagsCorrect     = 0;   // total correct red flags found across all emails
+let bdFlagsBonusCount  = 0;   // number of "all flags found" bonuses earned
+let bdWrongFlagsTotal  = 0;   // total wrong highlights across all emails
+
 /* ─── BOOT ────────────────────────────────────────────────── */
 function startGame() {
   show("screen-game");
@@ -217,6 +225,12 @@ function restartGame() {
   questionResults = [];
   featureResults  = [];
   highlighted = {}; wrongHighlights = 0;
+  bdPhishingCaught = 0;
+  bdSafeIdentified = 0;
+  bdWrongVerdicts  = 0;
+  bdFlagsCorrect   = 0;
+  bdFlagsBonusCount = 0;
+  bdWrongFlagsTotal = 0;
   gamePhase = "reading";
   show("screen-game");
   loadEmail(0);
@@ -363,11 +377,15 @@ function selectVerdict(verdict) {
       // Safe — correct
       gamePhase = "done";
       addScore(50);
+      bdSafeIdentified++;
+      bdWrongFlagsTotal += wrongHighlights;
       showResult(true, "🛡️", "CORRECT — EMAIL IS SAFE", "You correctly identified this as a legitimate email. No threats found.", 50);
     }
   } else {
     // Wrong verdict
     gamePhase = "done";
+    bdWrongVerdicts++;
+    bdWrongFlagsTotal += wrongHighlights;
     const msg = verdict === "phishing"
       ? "This was actually a legitimate email! Cutting a safe email undermines trust. Stay precise."
       : "This was a phishing email — you should have cut it! Look for the red flags next time.";
@@ -419,7 +437,13 @@ function onSlashEmail(e) {
   if (allFound && email.suspiciousCount > 0) {
     bonus = 50;
     addScore(50);
+    bdFlagsBonusCount++;
   }
+
+  // Track end-of-game breakdown stats
+  bdPhishingCaught++;
+  bdFlagsCorrect    += correctHighlights;
+  bdWrongFlagsTotal += wrongHighlights;
 
   setTimeout(() => {
     showResult(true, "⚔️", "THREAT ELIMINATED!", email.cutReward, 10, correctHighlights, bonus, email);
@@ -596,6 +620,7 @@ function nextEmail() {
 
   if (emailIndex >= EMAILS.length) {
     document.getElementById("go-score").textContent = totalScore;
+    populateGameOverScreen();
     show("screen-gameover");
 
     if (window.BotBusters) {
@@ -618,6 +643,87 @@ function nextEmail() {
     card.style.opacity = "1";
     loadEmail(emailIndex);
   }
+}
+
+/* ─── POPULATE GAME OVER (grade + breakdown + rank table) ─── */
+const RANK_TABLE = [
+  { name: "S RANK 🌟",  label: "Master Detective",  min: 850, max: 1000, color: "var(--green)" },
+  { name: "A RANK ✅",  label: "Skilled",    min: 700, max: 849,  color: "var(--green)" },
+  { name: "B RANK 👍",  label: "Capable",           min: 550, max: 699,  color: "var(--amber, #ffc107)" },
+  { name: "C RANK ⚠️",  label: "Learning",          min: 350, max: 549,  color: "var(--amber, #ffc107)" },
+  { name: "D RANK",     label: "Keep Practising",   min: 0,   max: 349,  color: "var(--red)" },
+];
+
+function getRankFor(score) {
+  return RANK_TABLE.find(r => score >= r.min && score <= r.max) || RANK_TABLE[RANK_TABLE.length - 1];
+}
+
+function populateGameOverScreen() {
+  // ── Grade ──
+  const rank = getRankFor(totalScore);
+  const gradeEl = document.getElementById("go-grade");
+  gradeEl.textContent = rank.name + " — " + rank.label;
+  gradeEl.style.color = rank.color;
+
+  // ── Breakdown ──
+  const rows = document.getElementById("go-bd-rows");
+  rows.innerHTML = "";
+
+  const totalEmails    = EMAILS.length;
+  const phishingTotal  = EMAILS.filter(e => e.verdict === "phishing").length;
+  const safeTotal      = EMAILS.filter(e => e.verdict === "safe").length;
+
+  const phishingPts    = bdPhishingCaught   * 10;
+  const safePts        = bdSafeIdentified   * 50;
+  const flagPts        = bdFlagsCorrect     * 30;
+  const bonusPts       = bdFlagsBonusCount  * 50;
+  const wrongFlagPen   = bdWrongFlagsTotal  * -10;
+
+  if (phishingPts) {
+    addBdRow(rows, `📧 Phishing emails caught (${bdPhishingCaught}/${phishingTotal} × 10)`, "+" + phishingPts, false);
+  }
+  if (safePts) {
+    addBdRow(rows, `🛡️ Safe emails identified (${bdSafeIdentified}/${safeTotal} × 50)`, "+" + safePts, false);
+  }
+  if (flagPts) {
+    addBdRow(rows, `🚩 Red flags spotted (${bdFlagsCorrect} × 30)`, "+" + flagPts, false);
+  }
+  if (bonusPts) {
+    addBdRow(rows, `🌟 All-flags bonuses (${bdFlagsBonusCount} × 50)`, "+" + bonusPts, false);
+  }
+  if (wrongFlagPen < 0) {
+    addBdRow(rows, `❌ Wrong highlights (${bdWrongFlagsTotal} × −10)`, wrongFlagPen.toString(), true);
+  }
+  if (bdWrongVerdicts > 0) {
+    addBdRow(rows, `💀 Wrong verdicts (${bdWrongVerdicts})`, "0", false, true);
+  }
+
+  // Total row
+  const total = document.createElement("div");
+  total.className = "go-bd-row";
+  total.innerHTML = `<span>TOTAL</span><span>${totalScore} pts</span>`;
+  rows.appendChild(total);
+
+  // ── Rank table ──
+  const rankRows = document.getElementById("go-rank-rows");
+  rankRows.innerHTML = "";
+  RANK_TABLE.forEach(r => {
+    const row = document.createElement("div");
+    const isCurrent = (totalScore >= r.min && totalScore <= r.max);
+    row.className = "go-rank-row" + (isCurrent ? " current" : "");
+    row.innerHTML = `
+      <span class="rank-name" style="${isCurrent ? '' : 'color:' + r.color + ';'}">${r.name} <span class="rank-sub">${r.label}</span></span>
+      <span class="rank-range">${r.min} – ${r.max}</span>
+    `;
+    rankRows.appendChild(row);
+  });
+}
+
+function addBdRow(parent, label, value, penalty, info) {
+  const row = document.createElement("div");
+  row.className = "go-bd-row" + (penalty ? " penalty" : "") + (info ? " info" : "");
+  row.innerHTML = `<span>${label}</span><span>${value}</span>`;
+  parent.appendChild(row);
 }
 
 /* ─── SCORE HELPERS ───────────────────────────────────────── */
