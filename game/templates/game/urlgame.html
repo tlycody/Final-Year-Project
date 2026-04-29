@@ -54,8 +54,7 @@
         <span class="hud-value" id="hud-score">0</span>
       </div>
       <div class="hud-block center">
-        <span class="hud-title">URL THREAT DETECTION</span>
-        <span class="hud-sub" id="hud-sub">IDENTIFY &amp; ELIMINATE THREATS</span>
+        <span class="hud-title">URL Hunter</span>
       </div>
       <div class="hud-block right">
         <span class="hud-label">Time Left</span>
@@ -67,7 +66,7 @@
     <div id="game-stage"></div>
 
     <div id="found-counter">
-      THREATS ELIMINATED: <span id="found-count">0</span>
+      Threats Eliminated: <span id="found-count">0</span>
     </div>
   </div>
 
@@ -83,14 +82,14 @@
     </div>
     
     <button class="btn-start" onclick="restartGame()" style="margin-top:6px">PLAY AGAIN</button>
-    <a class="btn-start" href="{% url 'play_game' %}" style="margin-top:8px; text-decoration:none; display:block;">← ALL GAMES</a>
+    <a class="btn-start" href="{% url 'play_game' %}" style="margin-top:8px; text-decoration:none; display:block;">Back to All Games</a>
   </div>
 
   <!-- ═══ ANALYSIS MODAL ════════════════════════ -->
   <div id="analysis-modal">
     <div id="analysis-card">
-      <div class="analysis-title">🚨 THREAT DETECTED</div>
-      <div class="analysis-sub">CLICK THE SUSPICIOUS PARTS OF THIS URL</div>
+      <div class="analysis-title">THREAT DETECTED</div>
+      <div class="analysis-sub">Click the suspicious parts of this URL!</div>
 
       <div class="analysis-url-box" id="analysis-url-display"></div>
 
@@ -101,7 +100,7 @@
       <div class="score-breakdown" id="score-breakdown" style="display:none"></div>
 
       <div class="modal-btns" id="modal-btns">
-        <button class="btn-submit" id="btn-submit" onclick="submitAnalysis()">SUBMIT ANALYSIS</button>
+        <button class="btn-submit" id="btn-submit" onclick="submitAnalysis()">Submit Analysis</button>
       </div>
     </div>
   </div>

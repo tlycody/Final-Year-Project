@@ -1,8 +1,4 @@
-/* ============================================================
-   URL Slayer — Game-specific styles
-   Loaded in addition to the site-wide style.css
-   ============================================================ */
-
+/* ROOT & RESET */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {

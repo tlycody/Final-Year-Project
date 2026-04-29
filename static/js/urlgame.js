@@ -1,15 +1,11 @@
-/* ============================================================
-   URL Slayer — Game logic
-   ============================================================ */
+/* Phishing Ninja - Game logic */
 
-/* ═══════════════════════════════════════════════════
-   URL DATA
-═══════════════════════════════════════════════════ */
+/* URL DATA */
 const URL_POOL = [
   // ─── SUSPICIOUS (9) ─────────────────────────────
   {
     id:'u1', display:'https://hsbc-secure-verify.com/login',
-    verdict:'suspicious', icon:'🔒',
+    verdict:'suspicious', 
     parts:[
       {id:'u1a',text:'https://',   label:'Protocol', sus:false, reason:'HTTPS is present — but alone doesn\'t guarantee a site is legitimate. Attackers obtain HTTPS certificates for fake sites.'},
       {id:'u1b',text:'hsbc-secure-verify', label:'Domain', sus:true,  reason:'🚨 FAKE DOMAIN. HSBC\'s real domain is hsbc.com. Hyphens and extra words in a bank\'s domain name are a major phishing red flag.'},
@@ -20,7 +16,7 @@ const URL_POOL = [
   },
   {
     id:'u2', display:'http://arnazon.com/deals',
-    verdict:'suspicious', icon:'🔓',
+    verdict:'suspicious', 
     parts:[
       {id:'u2a',text:'http://',    label:'Protocol', sus:true,  reason:'🚨 NO HTTPS. Amazon always uses HTTPS (encrypted). An HTTP shopping link is always suspicious — never enter payment details on HTTP pages.'},
       {id:'u2b',text:'arnazon',   label:'Domain',   sus:true,  reason:'🚨 TYPOSQUATTING. "arnazon" is NOT "amazon" — the letter m is replaced with rn, which looks nearly identical in most fonts. A classic lookalike attack.'},
@@ -31,7 +27,7 @@ const URL_POOL = [
   },
   {
     id:'u3', display:'https://paypal.com-account-restore.net/verify',
-    verdict:'suspicious', icon:'🔒',
+    verdict:'suspicious',
     parts:[
       {id:'u3a',text:'https://',          label:'Protocol',  sus:false, reason:'HTTPS is present — but attackers also obtain HTTPS certificates. Encryption alone does not make a site safe.'},
       {id:'u3b',text:'paypal.',           label:'Subdomain', sus:true,  reason:'🚨 SUBDOMAIN TRICK. "paypal" here is just a subdomain — controlled by whoever owns the real domain. paypal.evil.com would also show "paypal" before the dot.'},
@@ -43,7 +39,7 @@ const URL_POOL = [
   },
   {
     id:'u4', display:'bit.ly/3kx9mF2',
-    verdict:'suspicious', icon:'🔗',
+    verdict:'suspicious', 
     parts:[
       {id:'u4a',text:'bit.ly',    label:'Shortener', sus:true, reason:'🚨 SHORTENED URL. URL shorteners completely hide the real destination. You have no idea where this leads — it could be malware or a phishing page.'},
       {id:'u4b',text:'/3kx9mF2', label:'Opaque Path',sus:true, reason:'🚨 OPAQUE CODE. A random-looking path on a shortened URL is intentional obfuscation. It reveals nothing about the real destination.'},
@@ -52,7 +48,7 @@ const URL_POOL = [
   },
   {
     id:'u5', display:'https://instagram-support-help.com/verify',
-    verdict:'suspicious', icon:'🔒',
+    verdict:'suspicious',
     parts:[
       {id:'u5a',text:'https://',            label:'Protocol', sus:false, reason:'HTTPS is present — but doesn\'t mean the site is legitimate. Always check the domain.'},
       {id:'u5b',text:'instagram-support-help', label:'Domain', sus:true, reason:'🚨 FAKE DOMAIN. Instagram\'s real domain is instagram.com. Multiple hyphens in a major platform\'s domain name are a strong phishing indicator.'},
@@ -63,7 +59,7 @@ const URL_POOL = [
   },
   {
     id:'u6', display:'http://micros0ft.com/security-update',
-    verdict:'suspicious', icon:'🔓',
+    verdict:'suspicious', 
     parts:[
       {id:'u6a',text:'http://',         label:'Protocol', sus:true, reason:'🚨 NO HTTPS. Microsoft\'s genuine sites always use HTTPS. An unencrypted connection from a major tech company is always suspicious.'},
       {id:'u6b',text:'micros0ft',       label:'Domain',   sus:true, reason:'🚨 HOMOGRAPH ATTACK. The letter "o" in Microsoft is replaced with the digit "0". Extremely hard to spot — read every character of a domain.'},
@@ -74,7 +70,7 @@ const URL_POOL = [
   },
   {
     id:'u7', display:'https://amazon.com.checkout-verify.cc/payment',
-    verdict:'suspicious', icon:'🔒',
+    verdict:'suspicious',
     parts:[
       {id:'u7a',text:'https://',         label:'Protocol',  sus:false, reason:'HTTPS is present — but this site is still fraudulent. Encryption ≠ legitimacy.'},
       {id:'u7b',text:'amazon.com.',      label:'Subdomain', sus:true,  reason:'🚨 SUBDOMAIN TRICK. "amazon.com" here is just a subdomain — the real domain is "checkout-verify.cc". Amazon has nothing to do with this site.'},
@@ -86,7 +82,7 @@ const URL_POOL = [
   },
   {
     id:'u8', display:'https://bankofamerica-secure.net/login',
-    verdict:'suspicious', icon:'🔒',
+    verdict:'suspicious',
     parts:[
       {id:'u8a',text:'https://',            label:'Protocol', sus:false, reason:'HTTPS is present — but does not make the site trustworthy on its own.'},
       {id:'u8b',text:'bankofamerica-secure',label:'Domain',   sus:true,  reason:'🚨 FAKE DOMAIN. Bank of America\'s real domain is bankofamerica.com. Appending "-secure" or "-verify" to a bank name via hyphen is a classic phishing pattern.'},
@@ -97,7 +93,7 @@ const URL_POOL = [
   },
   {
     id:'u9', display:'https://support.paypai.com/account',
-    verdict:'suspicious', icon:'🔒',
+    verdict:'suspicious', 
     parts:[
       {id:'u9a',text:'https://',  label:'Protocol',  sus:false, reason:'HTTPS is present — even fraudulent sites obtain HTTPS certificates today.'},
       {id:'u9b',text:'support.', label:'Subdomain',  sus:false, reason:'"support" is a legitimate subdomain that real companies use. The problem is elsewhere in this URL.'},
@@ -110,22 +106,22 @@ const URL_POOL = [
   // ─── SAFE (4) ───────────────────────────────────
   {
     id:'s1', display:'https://www.bbc.co.uk/news',
-    verdict:'safe', icon:'🔒', parts:[],
+    verdict:'safe', parts:[],
     lesson:'BBC uses its official domain with HTTPS and the correct .co.uk TLD. All parts check out.',
   },
   {
     id:'s2', display:'https://accounts.google.com/signin',
-    verdict:'safe', icon:'🔒', parts:[],
+    verdict:'safe', parts:[],
     lesson:'Google\'s accounts subdomain on their real domain (google.com) with HTTPS — entirely legitimate.',
   },
   {
     id:'s3', display:'https://www.amazon.co.uk/orders',
-    verdict:'safe', icon:'🔒', parts:[],
+    verdict:'safe', parts:[],
     lesson:'Amazon UK uses their official domain with HTTPS and the correct .co.uk TLD.',
   },
   {
     id:'s4', display:'https://www.gov.uk/pay-tax',
-    verdict:'safe', icon:'🔒', parts:[],
+    verdict:'safe', parts:[],
     lesson:'UK government services use the official .gov.uk TLD — this is a legitimate HMRC-related URL.',
   },
 ];
