@@ -88,7 +88,7 @@ const SCENARIOS = [
       { id:'e5',  text: ' This is my personal guarantee.',                          sus: false },
       { id:'e6',  text: ' Offer closes at midnight tonight, limited spots only!', sus: true,  reason: 'Artificial deadline and scarcity. Pressure tactics prevent you from researching the offer or consulting others before acting.' },
     ],
-    cutReward: '⚔️ Celebrity deepfake destroyed! AI deepfakes of Elon Musk have collectively stolen hundreds of millions. Verified ticks can be purchased. The FCA confirms: any investment asking you to "send crypto to receive more" is fraud. Report to Action Fraud: 0300 123 2040.',
+    cutReward: 'Celebrity deepfake destroyed! AI deepfakes of Elon Musk have collectively stolen hundreds of millions. Verified ticks can be purchased. The FCA confirms: any investment asking you to "send crypto to receive more" is fraud.',
     safeInfo: null,
   },
 
