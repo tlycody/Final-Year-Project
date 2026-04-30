@@ -46,19 +46,14 @@
         </p>
 
         <div class="badges-showcase">
-            {% for badge in all_badges %}
-                {% with locked=True %}
-                    {% for ub in earned_badges %}
-                        {% if ub.badge.code == badge.code %}{% with locked=False %}{% endwith %}{% endif %}
-                    {% endfor %}
-                    <div class="badge-tile tier-{{ badge.tier }}{% if locked %} locked{% endif %}">
-                        <span class="badge-icon">{{ badge.icon }}</span>
-                        <div class="badge-name">{{ badge.name }}</div>
-                        <div class="badge-desc">{{ badge.description }}</div>
-                    </div>
-                {% endwith %}
-            {% endfor %}
+    {% for badge in all_badges %}
+        <div class="badge-tile tier-{{ badge.tier }}{% if badge.id not in earned_badge_ids %} locked{% endif %}">
+            <span class="badge-icon">{{ badge.icon }}</span>
+            <div class="badge-name">{{ badge.name }}</div>
+            <div class="badge-desc">{{ badge.description }}</div>
         </div>
+    {% endfor %}
+</div>
 
         <h2>Recent Games</h2>
         {% if sessions %}
